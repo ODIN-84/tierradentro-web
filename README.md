@@ -30,13 +30,13 @@ La copia del artefacto usada en cada build queda en `scripts/artefacto-carta-<fe
 
 ## Publicación
 
-- **GitHub:** repositorio `tierradentro-web` (cuenta del café).
+- **GitHub:** https://github.com/ODIN-84/tierradentro-web (usuario ODIN-84, creado el 2026-10-21 con la cuenta de Google de Carlos).
 - **Vercel:** proyecto importado desde ese repositorio, framework "Other", sin build (sitio estático). Cada push a `main` publica.
 - **Dominio:** `tierradentroexpress.com` (disponible al 2026-10-21; se compra y se conecta en Vercel → Settings → Domains).
 
 ## Google Analytics 4
 
-1. Crear la propiedad en https://analytics.google.com con la cuenta `tierradentrocafeexpress@gmail.com`.
+1. Propiedad creada el 2026-10-21 con la cuenta `tierradentrocafeexpress@gmail.com`: cuenta "Tierradentro Café Express", propiedad "Sitio web tierradentroexpress.com", flujo web ID 16177958744, ID de medición `G-984SW3TT1L`.
 2. Flujo de datos web → copiar el **ID de medición** (`G-XXXXXXXXXX`).
 3. Pegarlo en `js/config.js` (`GA_ID`). Mientras diga `PENDIENTE`, nada se envía a Google y los eventos salen en la consola del navegador.
 4. Registrar como **dimensiones personalizadas** (Administrar → Definiciones personalizadas → alcance evento):
