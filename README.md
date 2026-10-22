@@ -31,8 +31,8 @@ La copia del artefacto usada en cada build queda en `scripts/artefacto-carta-<fe
 ## Publicación
 
 - **GitHub:** https://github.com/ODIN-84/tierradentro-web (usuario ODIN-84, creado el 2026-10-21 con la cuenta de Google de Carlos).
-- **Vercel:** proyecto `tierradentro-web` del equipo `odin-84`, importado desde GitHub el 2026-10-21 (preset Other, sin build). Cada push a `main` publica. **URL actual: https://tierradentro-web.vercel.app** (cambiará al dominio propio cuando se conecte).
-- **Dominio:** `tierradentroexpress.com` (disponible al 2026-10-21; se compra y se conecta en Vercel → Settings → Domains).
+- **Vercel:** proyecto `tierradentro-web` del equipo `odin-84`, importado desde GitHub el 2026-10-21 (preset Other, sin build). Cada push a `main` publica. URL de producción: https://tierradentroexpress.com (alias tierradentro-web.vercel.app).
+- **Dominio:** **https://tierradentroexpress.com** (comprado el 2026-10-22 vía Vercel, registrador Name.com, vence 2027-10-22, DNS de Vercel). `www` redirige con 308 al dominio raíz; `tierradentro-web.vercel.app` sigue activo como alias.
 
 ## Google Analytics 4
 
