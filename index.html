@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tierradentro Café Express · Armenia</title>
+<meta name="description" content="Café de especialidad en el Mall Primavera Life, Armenia, Quindío. Espresso bar, métodos filtrados, cold brew, brunch, sandwiches y postres. Lunes a sábado 8:00 a 21:00.">
+<meta name="theme-color" content="#111113">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://tierradentroexpress.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tierradentro Café Express · Armenia">
+<meta property="og:description" content="Café de especialidad en el Mall Primavera Life. Mentalidad global, actitud local.">
+<meta property="og:image" content="https://tierradentroexpress.com/img/hmaquina.webp">
+<meta property="og:locale" content="es_CO">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@1,800&family=Barlow+Semi+Condensed:wght@400;600&display=swap">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CafeOrCoffeeShop",
+  "name": "Tierradentro Café Express",
+  "url": "https://tierradentroexpress.com/",
+  "image": "https://tierradentroexpress.com/img/hmaquina.webp",
+  "telephone": "+573146551487",
+  "servesCuisine": "Café de especialidad, brunch",
+  "priceRange": "$$",
+  "hasMenu": "https://tierradentroexpress.com/carta",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mall Primavera Life, local 110",
+    "addressLocality": "Armenia",
+    "addressRegion": "Quindío",
+    "addressCountry": "CO"
+  },
+  "openingHoursSpecification": [
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "08:00", "closes": "21:00" },
+    { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "10:00", "closes": "19:00" }
+  ]
+}
+</script>
+<style>
+/* Tierradentro · lienzo carbón — mismo sistema de diseño de la carta */
+:root{
+  color-scheme: dark;
+  --carbon:#111113; --surface:#19191b; --line:#2c2c2e;
+  --crema:#feffdb; --muted:#a8a49b; --arena:#d2b48c; --sol:#ffce5c; --bosque:#344e2a;
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;
+  --f-sub:"Archivo","Arial",system-ui,sans-serif;
+  --f-text:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",system-ui,sans-serif;
+}
+html{background:var(--carbon)}
+body{margin:0;background:var(--carbon);color:var(--crema);font-family:var(--f-text);font-size:17px;line-height:1.4;padding-inline:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sol);outline-offset:2px}
+img{max-width:100%}
+
+/* Portada */
+.top{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding-block:28px 22px}
+.top img{width:84px;height:84px}
+.eyebrow{font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--arena);margin:0 0 6px}
+.top h1{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(26px,7vw,38px);line-height:.98;letter-spacing:.01em;margin:0;text-wrap:balance}
+.motto{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:16px;color:var(--arena);margin:8px 0 0}
+
+/* Hero */
+.hero{margin:0 0 18px}
+.hero img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.lead{font-size:clamp(20px,5vw,26px);line-height:1.2;margin:0 0 18px;text-wrap:balance}
+.lead b{font-family:var(--f-display);font-weight:400;text-transform:uppercase;color:var(--sol)}
+.ctas{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;text-decoration:none;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:12px 18px;border:1px solid var(--arena);color:var(--arena)}
+.btn.primary{background:var(--crema);color:var(--carbon);border-color:var(--crema)}
+.btn.sol{border-color:var(--sol);color:var(--sol)}
+
+/* Secciones */
+.sec{padding-block:34px 8px;scroll-margin-top:24px;border-top:1px solid var(--line);margin-top:26px}
+.sechead h2{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(26px,6.4vw,34px);line-height:1;letter-spacing:.01em;margin:0;text-wrap:balance}
+.secsub{margin:8px 0 0;color:var(--muted);font-size:16px}
+.glabel{display:flex;align-items:center;gap:12px;margin:26px 0 4px;font-weight:600;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--arena)}
+.glabel::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* Tarjetas de lo que encuentras */
+.cards{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:560px){.cards{grid-template-columns:1fr 1fr}}
+.card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line)}
+.card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.card .t{padding:12px 14px 14px}
+.card h3{margin:0;font-weight:600;font-size:16px;letter-spacing:.07em;text-transform:uppercase;line-height:1.25}
+.card p{margin:4px 0 0;color:var(--muted);font-size:15px;line-height:1.35}
+.card .pr{display:block;margin-top:8px;color:var(--arena);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Horario / ubicación */
+.rows{list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start;padding-block:12px;border-bottom:1px solid var(--line)}
+.row h4{margin:0;font-weight:600;font-size:16px;letter-spacing:.07em;text-transform:uppercase}
+.row .v{font-weight:600;color:var(--arena);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.row .desc{margin:4px 0 0;color:var(--muted);font-size:15.5px}
+.note{margin:12px 0 0;font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
+.note::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--sol)}
+.map{margin:18px 0 0;border:1px solid var(--line);background:var(--surface);aspect-ratio:16/9;width:100%;display:block}
+
+/* Pie */
+.foot{margin-top:40px;padding-block:28px 40px;border-top:1px solid var(--line);display:grid;gap:14px}
+.foot .motto{margin:0;font-size:18px;color:var(--crema)}
+.foot p{margin:0;color:var(--muted);font-size:15px}
+.foot b{color:var(--crema);font-weight:600;letter-spacing:.06em}
+.foot .ctas .btn{font-size:13px;padding:10px 14px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<script src="/js/config.js"></script>
+<script src="/js/analytics.js" defer></script>
+</head>
+<body data-page="landing">
+<div class="wrap">
+  <header class="top">
+    <img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84">
+    <div>
+      <p class="eyebrow">Café de especialidad · Armenia, Quindío</p>
+      <h1>Tierradentro Café Express</h1>
+      <p class="motto">Mentalidad global, actitud local.</p>
+    </div>
+  </header>
+</div>
+
+<main class="wrap">
+  <section id="inicio">
+    <figure class="hero"><img src="/img/hmaquina.webp" alt="Barra de espresso de Tierradentro Café Express" width="960" height="540" fetchpriority="high"></figure>
+    <p class="lead">Café colombiano de origen, tostado por <b>Tierradentro Café &amp; Co.</b>, servido en el Mall Primavera Life. Pasa, pide y parchate.</p>
+    <div class="ctas">
+      <a class="btn primary" href="/carta" data-track="ver_carta">Ver la carta</a>
+      <a class="btn sol" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">WhatsApp</a>
+      <a class="btn" href="#ubicacion" data-track="como_llegar">Cómo llegar</a>
+    </div>
+  </section>
+
+  <section class="sec" id="que-encuentras">
+    <header class="sechead"><h2>Qué encuentras</h2><p class="secsub">Toca una categoría para ir directo a esa parte de la carta.</p></header>
+    <ul class="cards">
+      <li><a class="card" href="/carta#cafe" data-track="card_cafe"><img src="/img/hmaquina.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Espresso bar</h3><p>Espresso doble, latte, cappuccino, flat white, affogato y café campesino.</p><span class="pr">Desde $5.500</span></div></a></li>
+      <li><a class="card" href="/carta#filtrados" data-track="card_filtrados"><img src="/img/h48.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Filtrados &amp; cold brew</h3><p>Prensa francesa, V60, Chemex, AeroPress y cold brew de 8 horas en seis versiones.</p><span class="pr">Desde $14.000</span></div></a></li>
+      <li><a class="card" href="/carta#brunch" data-track="card_brunch"><img src="/img/h178.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Brunch</h3><p>Bowls, bagels, waffles de pandebono, quiches y chips de arracacha.</p><span class="pr">Desde $14.000</span></div></a></li>
+      <li><a class="card" href="/carta#sandwiches" data-track="card_sandwiches"><img src="/img/h106.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Sandwiches &amp; panadería</h3><p>Masa madre, jamón serrano, burrata, croissants y rollos de canela.</p><span class="pr">Desde $4.000</span></div></a></li>
+      <li><a class="card" href="/carta#postres" data-track="card_postres"><img src="/img/h155.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Postres &amp; refrescantes</h3><p>Tortas, cheesecakes, sodas artesanales y limonadas.</p><span class="pr">Desde $12.000</span></div></a></li>
+      <li><a class="card" href="/carta#home" data-track="card_llevar"><img src="/img/hllevar.webp" alt="" width="960" height="540" loading="lazy"><div class="t"><h3>Café para llevar</h3><p>Pangea, Laurasia y Gondwana en bolsa de 250 g y 500 g.</p><span class="pr">Desde $35.000</span></div></a></li>
+    </ul>
+  </section>
+
+  <section class="sec" id="horario">
+    <header class="sechead"><h2>Horario</h2></header>
+    <ul class="rows">
+      <li class="row"><div><h4>Lunes a sábado</h4></div><div class="v">8:00 – 21:00</div></li>
+      <li class="row"><div><h4>Domingos y festivos</h4></div><div class="v">10:00 – 19:00</div></li>
+    </ul>
+    <p class="note">Cerramos solo el 25 de diciembre y el 1 de enero.</p>
+  </section>
+
+  <section class="sec" id="ubicacion">
+    <header class="sechead"><h2>Dónde estamos</h2><p class="secsub">Mall Primavera Life, local 110 · Armenia, Quindío.</p></header>
+    <ul class="rows">
+      <li class="row"><div><h4>WhatsApp</h4><p class="desc">Pedidos, reservas y café para llevar.</p></div><a class="v" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">314 655 1487</a></li>
+      <li class="row"><div><h4>Mapa</h4><p class="desc">Abre la ruta en Google Maps.</p></div><a class="v" href="https://www.google.com/maps/search/?api=1&query=Tierradentro+Caf%C3%A9+Express+Mall+Primavera+Life+Armenia" target="_blank" rel="noopener" data-track="mapa">Cómo llegar</a></li>
+    </ul>
+    <iframe class="map" title="Mapa: Mall Primavera Life, Armenia" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Mall+Primavera+Life+Armenia+Quind%C3%ADo&output=embed"></iframe>
+  </section>
+
+  <section class="sec" id="nosotros">
+    <header class="sechead"><h2>De un humano a otro</h2></header>
+    <p class="secsub">Somos el punto Express de Tierradentro Café &amp; Co., tostadores de café de especialidad en Cali. Café de fincas colombianas, métodos de preparación que respetan el origen y un equipo que te atiende como en casa. Franquiciado de Tierradentro Café &amp; Co. S.A.S.</p>
+    <div class="ctas" style="margin-top:18px">
+      <a class="btn" href="https://g.page/r/CdyocexGE3mlEBM/review" target="_blank" rel="noopener" data-track="resena">Califícanos en Google</a>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="motto">De un humano a otro, parchate.</p>
+    <p>Tierradentro Café Express · Mall Primavera Life, local 110 · Armenia, Quindío</p>
+    <p>WhatsApp <a href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp"><b>314 655 1487</b></a></p>
+    <div class="ctas"><a class="btn" href="/carta" data-track="ver_carta">Ver la carta</a></div>
+    <p>Franquiciado de Tierradentro Café &amp; Co. S.A.S.</p>
+  </footer>
+</main>
+</body>
+</html>
