@@ -6,14 +6,18 @@ window.TDE_CONFIG = {
   WHATSAPP: "573146551487",
   SITE: "https://tierradentroexpress.com",
 
-  // Línea bajo "Dónde estamos" para encontrar el local dentro del mall (piso y referencia).
-  // Vacía = no se muestra. PENDIENTE: que Juanca la escriba, por ejemplo "Primer piso, junto a ...".
-  COMO_LLEGAR_MALL: "",
+  // Línea bajo "Dónde estamos" para encontrar el local dentro del mall. Vacía = no se muestra.
+  COMO_LLEGAR_MALL: "Estamos en el piso PB del edificio.",
 
   // Fiesta de salsa del último viernes de cada mes (franja "De noche" de la landing).
-  // hora: la de siempre. especiales: por fecha AAAA-MM-DD, nombre y detalle de esa fiesta (vacío = no se muestra).
+  // inicio y fin en 24 h (fin cae en la madrugada del sábado). fechas: "AAAA-MM" → "AAAA-MM-DD" cuando no es el último viernes.
+  // especiales: por fecha AAAA-MM-DD, nombre y detalle de esa fiesta (vacío = no se muestra).
   NOCHES: {
-    hora: "9:00 p. m.",
+    inicio: "21:00",
+    fin: "02:00",
+    fechas: {
+      "2026-12": "2026-12-18"
+    },
     especiales: {
       "2026-10-30": { nombre: "", detalle: "Disfraz opcional · DJ y percusión en vivo · Premio al mejor disfraz" }
     }

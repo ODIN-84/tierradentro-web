@@ -4,7 +4,9 @@
  *   Lunes a sábado 8:00–21:00; domingos y festivos 10:00–19:00; cerrado 25 de diciembre y 1 de enero.
  *   Festivos según la Ley 51 de 1983 (Ley Emiliani), calculados para cualquier año.
  * - Marca con .hoy la fila del horario que aplica hoy.
- * - #noches: fecha de la próxima fiesta de salsa (último viernes del mes) y el detalle de TDE_CONFIG.NOCHES.especiales.
+ * - #noches: fecha de la próxima fiesta de salsa (último viernes del mes, o la fecha de TDE_CONFIG.NOCHES.fechas para ese mes),
+ *   su horario (NOCHES.inicio a NOCHES.fin, que cae en la madrugada del sábado) y el detalle de NOCHES.especiales.
+ *   La noche de la fiesta el aviso dice "Abierto" hasta NOCHES.fin.
  * - #mall: línea de cómo encontrar el local dentro del mall (TDE_CONFIG.COMO_LLEGAR_MALL; si está vacía no se muestra).
  */
 (function () {
@@ -47,6 +49,8 @@
     return [480, 1260];
   }
   function hhmm(min) { return Math.floor(min / 60) + ":" + ("0" + (min % 60)).slice(-2); }
+  function minutos(s) { var p = String(s).split(":"); return parseInt(p[0], 10) * 60 + parseInt(p[1] || "0", 10); }
+  function ampm(min) { var h = Math.floor(min / 60) % 24; return ((h % 12) || 12) + ":" + ("0" + (min % 60)).slice(-2) + (h < 12 ? " a. m." : " p. m."); }
 
   function ultimoViernes(y, m) {
     var f = d(y, m + 1, 0); // último día del mes
@@ -58,22 +62,35 @@
   var hoy = d(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate());
   var min = ahora.getUTCHours() * 60 + ahora.getUTCMinutes();
 
-  // Próxima fiesta: último viernes de este mes; si ya pasó, el del mes siguiente.
-  var fiesta = ultimoViernes(hoy.getUTCFullYear(), hoy.getUTCMonth());
-  if (fiesta < hoy) fiesta = ultimoViernes(hoy.getUTCFullYear() + (hoy.getUTCMonth() === 11 ? 1 : 0), (hoy.getUTCMonth() + 1) % 12);
+  // Fiesta del mes: la fecha de NOCHES.fechas["AAAA-MM"] si existe; si no, el último viernes.
   var noches = cfg.NOCHES || {};
+  var ini = minutos(noches.inicio || "21:00"), fin = minutos(noches.fin || "02:00");
+  var franja = ampm(ini) + " a " + ampm(fin);
+  function fiestaDe(y, m) {
+    var f = (noches.fechas || {})[y + "-" + ("0" + (m + 1)).slice(-2)];
+    return f ? new Date(f + "T00:00:00Z") : ultimoViernes(y, m);
+  }
+  // Próxima fiesta: la de este mes; si ya pasó, la del mes siguiente.
+  var fiesta = fiestaDe(hoy.getUTCFullYear(), hoy.getUTCMonth());
+  if (fiesta < hoy) fiesta = fiestaDe(hoy.getUTCFullYear() + (hoy.getUTCMonth() === 11 ? 1 : 0), (hoy.getUTCMonth() + 1) % 12);
   var hayFiestaHoy = clave(fiesta) === clave(hoy);
+  // Madrugada después de la fiesta (la de anoche sigue hasta NOCHES.fin).
+  var ayer = mas(hoy, -1);
+  var siguioAnoche = min < fin && clave(fiestaDe(ayer.getUTCFullYear(), ayer.getUTCMonth())) === clave(ayer);
 
   // --- Estado abierto / cerrado ----------------------------------------------
   var est = document.getElementById("estado");
   if (est) {
     var h = horario(hoy), abierto = false, txt;
-    if (h && min >= h[0] && min < h[1]) {
+    if (siguioAnoche || (hayFiestaHoy && min >= ini)) {
+      abierto = true;
+      txt = "Abierto · fiesta de salsa hasta las " + ampm(fin);
+    } else if (hayFiestaHoy && h && min >= h[0] && min < h[1]) {
+      abierto = true;
+      txt = "Abierto · hoy hay salsa de " + franja;
+    } else if (h && min >= h[0] && min < h[1]) {
       abierto = true;
       txt = (h[1] - min <= 60 ? "Abierto · cierra pronto, a las " : "Abierto · cierra a las ") + hhmm(h[1]);
-    } else if (hayFiestaHoy && h && min >= h[1]) {
-      abierto = true;
-      txt = "Hoy hay fiesta de salsa desde las " + (noches.hora || "9:00 p. m.");
     } else if (h && min < h[0]) {
       txt = "Cerrado · abre hoy a las " + hhmm(h[0]);
     } else {
@@ -96,11 +113,11 @@
   var fe = document.getElementById("noches-fecha");
   if (fe) {
     var esp = (noches.especiales || {})[clave(fiesta)] || {};
-    fe.textContent = !horario(fiesta) && !esp.hora
-      // El último viernes cae en día de cierre (25 de diciembre): la fecha se anuncia aparte.
+    fe.textContent = !horario(fiesta)
+      // La fecha cae en día de cierre (25 de diciembre o 1 de enero) y no hay otra en NOCHES.fechas: se anuncia aparte.
       ? "La fecha de " + MESES[fiesta.getUTCMonth()] + " la anunciamos en Instagram"
-      : (hayFiestaHoy ? "Hoy, " : "Próxima: ") + "viernes " + fiesta.getUTCDate() + " de " + MESES[fiesta.getUTCMonth()] +
-        " · " + (esp.hora || noches.hora || "9:00 p. m.");
+      : (hayFiestaHoy ? "Hoy, " : "Próxima: ") + DIAS[fiesta.getUTCDay()] + " " + fiesta.getUTCDate() + " de " + MESES[fiesta.getUTCMonth()] +
+        " · " + franja;
     var nom = document.getElementById("noches-nombre");
     if (nom && esp.nombre) { nom.textContent = esp.nombre; nom.hidden = false; }
     var det = document.getElementById("noches-detalle");
@@ -108,7 +125,7 @@
     var wa = document.getElementById("noches-wa");
     if (wa && cfg.WHATSAPP) {
       wa.href = "https://wa.me/" + cfg.WHATSAPP + "?text=" + encodeURIComponent(
-        "Hola, quiero apartar mesa para la fiesta de salsa del viernes " + fiesta.getUTCDate() + " de " + MESES[fiesta.getUTCMonth()] + ".");
+        "Hola, quiero apartar mesa para la fiesta de salsa del " + DIAS[fiesta.getUTCDay()] + " " + fiesta.getUTCDate() + " de " + MESES[fiesta.getUTCMonth()] + ".");
     }
   }
 
