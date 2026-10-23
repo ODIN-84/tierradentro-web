@@ -12,7 +12,8 @@
  *   view_section     section                                     Sección de la landing visible (una vez por visita)
  *   time_on_page     seconds, page_type                          30 s, 60 s, 120 s, 300 s en la página
  *
- * Todos los eventos llevan page_type = "landing" | "carta" (desde <body data-page>).
+ * Todos los eventos llevan page_type = "landing" | "carta" (desde <body data-page>; /en/menu también es "carta",
+ * el idioma se distingue por la URL de la página).
  * Para que category, cta, section, qr_location, percent, direction y page_type aparezcan en los informes,
  * hay que registrarlos como dimensiones personalizadas en GA4 (Administrar → Definiciones personalizadas).
  */
@@ -106,10 +107,12 @@
         var b = li.querySelector(".thumb"); if (!b) return;
         var sec = li.closest("section"); var cat = sec ? sec.id : "";
         var precio = parseInt(String(b.dataset.price || "").replace(/[^0-9]/g, "").slice(0, 7), 10) || 0;
-        ultimo = b.dataset.name;
+        // En /en/menu, data-item trae el nombre en español: el producto se cuenta igual en los dos idiomas.
+        var nombre = b.dataset.item || b.dataset.name;
+        ultimo = nombre;
         track("view_item", {
-          item_name: b.dataset.name, item_category: cat, price: precio, currency: "COP",
-          items: [{ item_name: b.dataset.name, item_category: cat, price: precio, quantity: 1 }]
+          item_name: nombre, item_category: cat, price: precio, currency: "COP",
+          items: [{ item_name: nombre, item_category: cat, price: precio, quantity: 1 }]
         });
       });
     });

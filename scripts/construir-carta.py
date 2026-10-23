@@ -10,6 +10,9 @@ Qué hace:
   3. Cambia las rutas de imágenes de `img/` a `/img/` (carpeta compartida con la landing).
   4. Convierte el número de WhatsApp del pie en enlace rastreable.
   5. Agrega enlace a la landing y los scripts de analítica (js/config.js + js/analytics.js).
+  6. Agrega el selector de idioma (English → /en/menu) y los enlaces hreflang.
+
+Después de correrlo, regenerar la versión en inglés: python scripts/construir-carta-en.py
 
 El artefacto sigue siendo la fuente de verdad del contenido de la carta:
 https://claude.ai/artifact/DwXHwwdohhGCbhvQQ9oU9S
@@ -26,6 +29,8 @@ HEAD_EXTRA = """<meta name="description" content="Carta 2026 de Tierradentro Caf
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="canonical" href="https://tierradentroexpress.com/carta">
+<link rel="alternate" hreflang="es" href="https://tierradentroexpress.com/carta">
+<link rel="alternate" hreflang="en" href="https://tierradentroexpress.com/en/menu">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Carta · Tierradentro Café Express">
 <meta property="og:description" content="Café de especialidad en el Mall Primavera Life, Armenia. Mira la carta completa con fotos y precios.">
@@ -36,6 +41,15 @@ HEAD_EXTRA = """<meta name="description" content="Carta 2026 de Tierradentro Caf
 """
 
 FOOT_HOME = '<a class="btn" href="/">Ir al inicio</a>'
+
+# Selector de idioma (la versión en inglés la arma scripts/construir-carta-en.py).
+CSS_IDIOMA = (
+    ".top{position:relative;padding-top:44px}"
+    ".lang{position:absolute;top:10px;right:0;text-decoration:none;font-weight:600;font-size:12px;letter-spacing:.14em;"
+    "text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}"
+    ".lang:hover{color:var(--crema);border-color:var(--arena)}\n"
+)
+LINK_IDIOMA = '<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'
 
 
 def construir(origen: Path) -> str:
@@ -72,6 +86,9 @@ def construir(origen: Path) -> str:
         '<img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84">',
         '<a href="/" aria-label="Ir al inicio"><img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84"></a>',
     )
+    # 5. Selector de idioma en la portada.
+    head_carta = head_carta.replace("</style>", CSS_IDIOMA + "</style>", 1)
+    body_carta = body_carta.replace('<header class="top">', '<header class="top">\n    ' + LINK_IDIOMA, 1)
 
     return (
         '<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'

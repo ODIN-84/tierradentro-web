@@ -6,6 +6,7 @@ Sitio estático (sin framework) con la landing y la carta 2026 del café. Se pub
 |---|---|---|
 | `/` | `index.html` | Landing: qué encuentras, horario, ubicación, WhatsApp, reseñas. |
 | `/carta` | `carta/index.html` | La carta con fotos y precios. Se genera desde el artefacto de Claude. |
+| `/en/menu` | `en/menu/index.html` | La carta en inglés. Se genera desde `carta/index.html` con `scripts/construir-carta-en.py`. |
 | `/img/` | `img/*.webp` | Fotos de la carta (148 archivos, portadas `h*.webp`, miniaturas `t*.webp`). |
 | `/js/config.js` | | ID de Google Analytics y datos públicos. **Único archivo que hay que editar para activar la analítica.** |
 | `/js/analytics.js` | | Eventos GA4 (ver lista abajo). |
@@ -24,7 +25,15 @@ Para publicar una versión nueva:
 python scripts/construir-carta.py <ruta-al-html-descargado>
 ```
 
-4. `git commit` y `git push`. Vercel publica solo.
+4. Regenerar la carta en inglés:
+
+```bash
+python scripts/construir-carta-en.py
+```
+
+   Si hay un producto o descripción nueva, el script se detiene y lista lo que falta traducir; se agrega a los
+   diccionarios `NOMBRES`, `DESCRIPCIONES` o `TEXTOS` del script y se vuelve a correr.
+5. `git commit` y `git push`. Vercel publica solo.
 
 La copia del artefacto usada en cada build queda en `scripts/artefacto-carta-<fecha>.html` para trazabilidad.
 

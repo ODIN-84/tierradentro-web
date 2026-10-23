@@ -66,8 +66,23 @@ img{max-width:100%}
 .motto{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:16px;color:var(--arena);margin:8px 0 0}
 
 /* Hero */
-.hero{margin:0 0 18px}
-.hero img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.hero{margin:0 0 18px;position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--surface)}
+.hero img{display:block;width:100%;height:100%;object-fit:cover}
+/* Portada en movimiento: 4 fotos de 6 s, zoom lento 5 % y fundido de 0,6 s (design system, "Movimiento"). El bucle vuelve al primer cuadro. */
+.hero .slide{position:absolute;inset:0;opacity:0;transform-origin:50% 45%}
+.hero .slide:first-child{opacity:1}
+@media (prefers-reduced-motion:no-preference){
+  .hero .slide{animation:kb 24s linear infinite both}
+  .hero .slide:nth-child(1){animation-delay:-.6s}
+  .hero .slide:nth-child(2){animation-delay:5.4s}
+  .hero .slide:nth-child(3){animation-delay:11.4s}
+  .hero .slide:nth-child(4){animation-delay:17.4s}
+}
+@keyframes kb{0%{opacity:0;transform:scale(1)}2.5%{opacity:1}25%{opacity:1}27.5%{opacity:0;transform:scale(1.05)}100%{opacity:0;transform:scale(1.05)}}
+.estado{display:inline-flex;align-items:center;gap:8px;margin:0 0 16px;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.estado::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.estado.on{color:var(--crema)}
+.estado.on::before{background:var(--sol)}
 .lead{font-size:clamp(20px,5vw,26px);line-height:1.2;margin:0 0 18px;text-wrap:balance}
 .lead b{font-family:var(--f-display);font-weight:400;text-transform:uppercase;color:var(--sol)}
 .ctas{display:flex;flex-wrap:wrap;gap:10px}
@@ -100,6 +115,16 @@ img{max-width:100%}
 .row .desc{margin:4px 0 0;color:var(--muted);font-size:15.5px}
 .note{margin:12px 0 0;font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
 .note::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--sol)}
+.row.hoy h4::after{content:"Hoy";margin-left:10px;padding:1px 8px;font-size:12px;letter-spacing:.14em;color:var(--carbon);background:var(--sol);vertical-align:2px}
+
+/* De noche: fiesta del último viernes */
+.noche{display:grid;gap:16px;margin-top:20px}
+.noche figure{margin:0;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--surface)}
+.noche figure img{display:block;width:100%;height:100%;object-fit:cover}
+.noche .kick{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:18px;color:var(--arena);margin:0}
+.noche .fecha{margin:0;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(20px,5.4vw,26px);line-height:1.05;color:var(--sol);text-wrap:balance}
+.noche .nombre{margin:0;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--crema)}
+.noche .det{margin:0;color:var(--muted);font-size:16px}
 .map{margin:18px 0 0;border:1px solid var(--line);background:var(--surface);aspect-ratio:16/9;width:100%;display:block}
 
 /* Pie */
@@ -112,6 +137,7 @@ img{max-width:100%}
 </style>
 <script src="/js/config.js"></script>
 <script src="/js/analytics.js" defer></script>
+<script src="/js/horario.js" defer></script>
 </head>
 <body data-page="landing">
 <div class="wrap">
@@ -127,12 +153,19 @@ img{max-width:100%}
 
 <main class="wrap">
   <section id="inicio">
-    <figure class="hero"><img src="/img/hmaquina.webp" alt="Barra de espresso de Tierradentro Café Express" width="960" height="540" fetchpriority="high"></figure>
+    <figure class="hero">
+      <img class="slide" src="/img/hmaquina.webp" alt="Barra de espresso de Tierradentro Café Express" width="960" height="540" fetchpriority="high">
+      <img class="slide" src="/img/hero-v60.webp" alt="" width="960" height="540" decoding="async">
+      <img class="slide" src="/img/hero-barra.webp" alt="" width="960" height="540" decoding="async">
+      <img class="slide" src="/img/hero-clientes.webp" alt="" width="960" height="540" decoding="async">
+    </figure>
+    <p class="estado" id="estado" aria-live="polite" hidden></p>
     <p class="lead">Café colombiano de origen, tostado por <b>Tierradentro Café &amp; Co.</b>, servido en el Mall Primavera Life. Pasa, pide y parchate.</p>
     <div class="ctas">
       <a class="btn primary" href="/carta" data-track="ver_carta">Ver la carta</a>
       <a class="btn sol" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">WhatsApp</a>
       <a class="btn" href="#ubicacion" data-track="como_llegar">Cómo llegar</a>
+      <a class="btn" href="/en/menu" hreflang="en" lang="en" data-track="ver_menu_en">Menu in English</a>
     </div>
   </section>
 
@@ -148,17 +181,32 @@ img{max-width:100%}
     </ul>
   </section>
 
+  <section class="sec" id="noches">
+    <header class="sechead"><h2>De noche, salsa</h2><p class="secsub">El último viernes de cada mes el café se vuelve pista de baile.</p></header>
+    <div class="noche">
+      <figure><img src="/img/salsa.webp" alt="Gente bailando salsa en Tierradentro Café Express" width="960" height="540" loading="lazy"></figure>
+      <p class="kick">De un humano a otro, a bailar.</p>
+      <p class="fecha" id="noches-fecha">Último viernes de cada mes</p>
+      <p class="nombre" id="noches-nombre" hidden></p>
+      <p class="det" id="noches-detalle" hidden></p>
+      <div class="ctas">
+        <a class="btn sol" id="noches-wa" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="salsa_whatsapp">Aparta tu mesa</a>
+        <a class="btn" href="https://www.instagram.com/tierradentrocafe.express/" target="_blank" rel="noopener" data-track="salsa_instagram">Fotos en Instagram</a>
+      </div>
+    </div>
+  </section>
+
   <section class="sec" id="horario">
     <header class="sechead"><h2>Horario</h2></header>
     <ul class="rows">
-      <li class="row"><div><h4>Lunes a sábado</h4></div><div class="v">8:00 – 21:00</div></li>
-      <li class="row"><div><h4>Domingos y festivos</h4></div><div class="v">10:00 – 19:00</div></li>
+      <li class="row" data-dia="semana"><div><h4>Lunes a sábado</h4></div><div class="v">8:00 – 21:00</div></li>
+      <li class="row" data-dia="domingo"><div><h4>Domingos y festivos</h4></div><div class="v">10:00 – 19:00</div></li>
     </ul>
     <p class="note">Cerramos solo el 25 de diciembre y el 1 de enero.</p>
   </section>
 
   <section class="sec" id="ubicacion">
-    <header class="sechead"><h2>Dónde estamos</h2><p class="secsub">Mall Primavera Life, local 110 · Armenia, Quindío.</p></header>
+    <header class="sechead"><h2>Dónde estamos</h2><p class="secsub">Mall Primavera Life, local 110 · Armenia, Quindío.</p><p class="secsub" id="mall" hidden></p></header>
     <ul class="rows">
       <li class="row"><div><h4>WhatsApp</h4><p class="desc">Pedidos, reservas y café para llevar.</p></div><a class="v" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">314 655 1487</a></li>
       <li class="row"><div><h4>Mapa</h4><p class="desc">Abre la ruta en Google Maps.</p></div><a class="v" href="https://www.google.com/maps/search/?api=1&query=Tierradentro+Caf%C3%A9+Express+Mall+Primavera+Life+Armenia" target="_blank" rel="noopener" data-track="mapa">Cómo llegar</a></li>
