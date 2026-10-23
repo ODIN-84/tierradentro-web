@@ -101,7 +101,7 @@ img{max-width:100%}
 .cards{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:14px;grid-template-columns:1fr}
 @media (min-width:560px){.cards{grid-template-columns:1fr 1fr}}
 .card{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--line)}
-.card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover}
+.card img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
 .card .t{padding:12px 14px 14px}
 .card h3{margin:0;font-weight:600;font-size:16px;letter-spacing:.07em;text-transform:uppercase;line-height:1.25}
 .card p{margin:4px 0 0;color:var(--muted);font-size:15px;line-height:1.35}
@@ -121,11 +121,7 @@ img{max-width:100%}
 .noche{display:grid;gap:16px;margin-top:20px}
 .noche figure{margin:0;aspect-ratio:16/9;max-width:100%;overflow:hidden;background:var(--surface)}
 .noche figure img{display:block;width:100%;height:100%;object-fit:cover}
-/* Computador: la portada y la foto de salsa van de borde a borde de la pantalla; textos y estructura no cambian. */
-@media (min-width:760px){
-  html,body{overflow-x:clip}
-  .hero,.noche figure{width:100vw;max-width:none;margin-inline:calc(50% - 50vw);max-height:82vh}
-}
+.noche-txt{display:grid;gap:16px}
 .noche .kick{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:18px;color:var(--arena);margin:0}
 .noche .fecha{margin:0;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(20px,5.4vw,26px);line-height:1.05;color:var(--sol);text-wrap:balance}
 .noche .nombre{margin:0;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--crema)}
@@ -138,6 +134,33 @@ img{max-width:100%}
 .foot p{margin:0;color:var(--muted);font-size:15px}
 .foot b{color:var(--crema);font-weight:600;letter-spacing:.06em}
 .foot .ctas .btn{font-size:13px;padding:10px 14px}
+/* Computador (desde 960 px): columna de 1200 px, portada a dos columnas, tarjetas de a tres,
+   salsa y horario/ubicación lado a lado. En celular no cambia nada. */
+@media (min-width:960px){
+  body{padding-inline:32px}
+  .wrap{max-width:1200px}
+  .top{padding-block:40px 32px;gap:24px}
+  .top img{width:104px;height:104px}
+  .top h1{font-size:48px}
+  .motto{font-size:18px}
+  #inicio{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-rows:1fr auto auto auto 1fr;column-gap:56px}
+  #inicio .hero{grid-column:1;grid-row:1/6;margin:0}
+  #inicio .estado{grid-column:2;grid-row:2;justify-self:start}
+  #inicio .lead{grid-column:2;grid-row:3;font-size:32px;margin-bottom:28px}
+  #inicio .ctas{grid-column:2;grid-row:4}
+  .sec{padding-block:56px 8px;margin-top:40px}
+  .sechead h2{font-size:44px}
+  .secsub{font-size:18px;max-width:70ch}
+  .cards{grid-template-columns:repeat(3,1fr);gap:24px;margin-top:28px}
+  .card{transition:border-color .2s}
+  .card:hover{border-color:var(--arena)}
+  .noche{grid-template-columns:minmax(0,7fr) minmax(0,5fr);column-gap:56px;align-items:center;margin-top:28px}
+  .noche-txt{display:grid;gap:16px}
+  .noche .fecha{font-size:34px}
+  .duo{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:56px;align-items:start}
+  .foot{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:56px}
+  .foot .motto{grid-column:1/-1}
+}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 </style>
 <script src="/js/config.js"></script>
@@ -190,6 +213,7 @@ img{max-width:100%}
     <header class="sechead"><h2>De noche, salsa</h2><p class="secsub">El último viernes de cada mes el café se vuelve pista de baile.</p></header>
     <div class="noche">
       <figure><img src="/img/salsa.webp" alt="Gente bailando salsa en Tierradentro Café Express" width="960" height="540" loading="lazy"></figure>
+      <div class="noche-txt">
       <p class="kick">De un humano a otro, a bailar.</p>
       <p class="fecha" id="noches-fecha">Último viernes de cada mes</p>
       <p class="nombre" id="noches-nombre" hidden></p>
@@ -198,9 +222,11 @@ img{max-width:100%}
         <a class="btn sol" id="noches-wa" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="salsa_whatsapp">Aparta tu mesa</a>
         <a class="btn" href="https://www.instagram.com/tierradentrocafe.express/" target="_blank" rel="noopener" data-track="salsa_instagram">Fotos en Instagram</a>
       </div>
+      </div>
     </div>
   </section>
 
+  <div class="duo">
   <section class="sec" id="horario">
     <header class="sechead"><h2>Horario</h2></header>
     <ul class="rows">
@@ -219,6 +245,7 @@ img{max-width:100%}
     </ul>
     <iframe class="map" title="Mapa: Mall Primavera Life, Armenia" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Mall+Primavera+Life+Armenia+Quind%C3%ADo&output=embed"></iframe>
   </section>
+  </div>
 
   <section class="sec" id="nosotros">
     <header class="sechead"><h2>De un humano a otro</h2></header>
