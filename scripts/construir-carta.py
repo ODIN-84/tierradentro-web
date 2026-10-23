@@ -49,7 +49,28 @@ CSS_IDIOMA = (
     "text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}"
     ".lang:hover{color:var(--crema);border-color:var(--arena)}\n"
 )
-LINK_IDIOMA = '<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'
+# Computador (desde 960 px): columna de 1200 px, portadas de sección más bajas y productos en dos columnas.
+# En celular no cambia nada.
+CSS_ESCRITORIO = (
+    "@media (min-width:960px){"
+    "body{padding-inline:32px}"
+    ".wrap,.cats nav{max-width:1200px}"
+    ".cats{margin-inline:-32px;padding-inline:32px}"
+    ".top{padding-block:52px 32px;gap:24px}"
+    ".top img{width:104px;height:104px}"
+    ".top h1{font-size:48px}"
+    ".motto{font-size:18px}"
+    ".sec{padding-block:56px 8px}"
+    ".hero img{aspect-ratio:16/5}"
+    ".sechead h2{font-size:44px}"
+    ".secsub{font-size:18px}"
+    ".group{margin-top:34px}"
+    ".group ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px}"
+    ".foot{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:48px;align-items:start}"
+    ".foot .motto{grid-column:1/-1}"
+    "}\n"
+)
+LINK_IDIOMA ='<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'
 
 
 def construir(origen: Path) -> str:
@@ -87,7 +108,7 @@ def construir(origen: Path) -> str:
         '<a href="/" aria-label="Ir al inicio"><img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84"></a>',
     )
     # 5. Selector de idioma en la portada.
-    head_carta = head_carta.replace("</style>", CSS_IDIOMA + "</style>", 1)
+    head_carta = head_carta.replace("</style>", CSS_IDIOMA + CSS_ESCRITORIO + "</style>", 1)
     body_carta = body_carta.replace('<header class="top">', '<header class="top">\n    ' + LINK_IDIOMA, 1)
 
     return (
