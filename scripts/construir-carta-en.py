@@ -90,7 +90,7 @@ NOMBRES = {
     "Torta chocolate con maracuyá": "Chocolate passion fruit cake",
     "Torta chocolate": "Chocolate cake",
     "Torta almojábana": "Almojábana cake",
-    "Postre de limón": "Lemon dessert",
+    "Postre de limón": "Lemon pie",
     "Cheesecake frutos rojos": "Red berry cheesecake",
     "Cheesecake frutos amarillos": "Yellow fruit cheesecake",
     "Soda de naranja": "Orange soda",
