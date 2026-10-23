@@ -11,6 +11,8 @@ Qué hace:
   4. Convierte el número de WhatsApp del pie en enlace rastreable.
   5. Agrega enlace a la landing y los scripts de analítica (js/config.js + js/analytics.js).
   6. Agrega el selector de idioma (English → /en/menu) y los enlaces hreflang.
+  7. Agrega las notas de cata y el origen de los cafés para llevar (NOTAS_CATA) y la línea del café de la casa (CAFE_CASA).
+     La descripción de Gondwana del artefacto sale del producto y queda como nota al final de los cafés para llevar (NOTA_LLEVAR).
 
 Después de correrlo, regenerar la versión en inglés: python scripts/construir-carta-en.py
 
@@ -52,6 +54,25 @@ CSS_IDIOMA = (
 LINK_IDIOMA = '<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'
 
 
+# Notas de cata y origen tal como están impresos en las bolsas Daily Drip (foto "Cafe para llevar mesa negra.jpg" del banco
+# de Juan Laverde). Los tres son la línea fija Daily Drip; el espresso de la casa es Pangea (confirmado por Carlos el 2026-10-22).
+NOTAS_CATA = {
+    "Café Pangea 500 g": ("mandarina | chocolate | melaza | nuez", "Huila · tueste medio"),
+    "Café Laurasia 250 g": ("floral | afrutado | jugoso", "Inzá, Cauca · Alejandro Ariza"),
+    "Café Gondwana 250 g": ("frutos rojos | alicorado | chocolate", "Inzá, Cauca · Alejandro Ariza"),
+}
+# La descripción del artefacto para Gondwana habla de los cafés de temporada, no de Gondwana: va como nota de la sección.
+DESC_GONDWANA = '<p class="desc">Pregunta por nuestros high end y exóticos de temporada.</p>'
+NOTA_LLEVAR = '<p class="note">Pregunta por nuestros high end y exóticos de temporada.</p>'
+# Línea bajo el título de la sección Café. Vacía = no se agrega.
+CAFE_CASA = '<p class="casa">Café de la casa: <b>Pangea</b> · Huila · mandarina | chocolate | melaza | nuez</p>'
+CSS_CATA = (
+    ".cata{grid-column:1/-1;margin:6px 0 0;font-weight:600;font-size:15px;letter-spacing:.04em;color:var(--arena)}"
+    ".origen{grid-column:1/-1;margin:2px 0 0;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}"
+    ".casa{margin:8px 0 0;font-size:15px;color:var(--muted)}.casa b{color:var(--crema);font-weight:600}"
+)
+
+
 def construir(origen: Path) -> str:
     html = origen.read_text(encoding="utf-8")
 
@@ -89,6 +110,22 @@ def construir(origen: Path) -> str:
     # 5. Selector de idioma en la portada.
     head_carta = head_carta.replace("</style>", CSS_IDIOMA + "</style>", 1)
     body_carta = body_carta.replace('<header class="top">', '<header class="top">\n    ' + LINK_IDIOMA, 1)
+
+    # 7. Notas de cata y café de la casa.
+    head_carta = head_carta.replace("</style>", CSS_CATA + "</style>", 1)
+    for nombre, (notas, procedencia) in NOTAS_CATA.items():
+        patron = re.compile(r'(<h4>' + re.escape(nombre) + r'</h4><p class="desc">[^<]*</p>)')
+        if not patron.search(body_carta):
+            sys.exit(f"No encontré el producto {nombre!r} en la carta (NOTAS_CATA).")
+        body_carta = patron.sub(lambda m: m.group(1) + f'<p class="cata">{notas}</p><p class="origen">{procedencia}</p>', body_carta, count=1)
+    i_g = body_carta.find("<h4>Café Gondwana 250 g</h4>" + DESC_GONDWANA)
+    if i_g == -1:
+        sys.exit("No encontré la descripción de Gondwana (DESC_GONDWANA); revisar el paso 7.")
+    body_carta = body_carta.replace("<h4>Café Gondwana 250 g</h4>" + DESC_GONDWANA, "<h4>Café Gondwana 250 g</h4>", 1)
+    i_fin = body_carta.index("</ul>", i_g)  # fin de la lista de cafés para llevar
+    body_carta = body_carta[:i_fin + 5] + NOTA_LLEVAR + body_carta[i_fin + 5:]
+    if CAFE_CASA:
+        body_carta = body_carta.replace("<h2>Café</h2></header>", "<h2>Café</h2>" + CAFE_CASA + "</header>", 1)
 
     return (
         '<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'

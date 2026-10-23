@@ -243,6 +243,17 @@ TEXTOS = [
     ('<h3 class="glabel">Bruder &amp; coctelería</h3>', '<h3 class="glabel">Bruder &amp; cocktails</h3>'),
     ('<h3 class="glabel">Vinos &amp; shots</h3>', '<h3 class="glabel">Wine &amp; shots</h3>'),
     ('<h3 class="glabel">Adiciones</h3>', '<h3 class="glabel">Add-ons</h3>'),
+    # Notas de cata y café de la casa (construir-carta.py, NOTAS_CATA y CAFE_CASA)
+    ('<p class="cata">mandarina | chocolate | melaza | nuez</p><p class="origen">Huila · tueste medio</p>',
+     '<p class="cata">mandarin | chocolate | molasses | nuts</p><p class="origen">Huila · medium roast</p>'),
+    ('<p class="cata">floral | afrutado | jugoso</p><p class="origen">Inzá, Cauca · Alejandro Ariza</p>',
+     '<p class="cata">floral | fruity | juicy</p><p class="origen">Inzá, Cauca · Alejandro Ariza</p>'),
+    ('<p class="cata">frutos rojos | alicorado | chocolate</p><p class="origen">Inzá, Cauca · Alejandro Ariza</p>',
+     '<p class="cata">red berries | boozy | chocolate</p><p class="origen">Inzá, Cauca · Alejandro Ariza</p>'),
+    ('<p class="casa">Café de la casa: <b>Pangea</b> · Huila · mandarina | chocolate | melaza | nuez</p>',
+     '<p class="casa">House coffee: <b>Pangea</b> · Huila, Colombia · mandarin | chocolate | molasses | nuts</p>'),
+    ('<p class="note">Pregunta por nuestros high end y exóticos de temporada.</p>',
+     '<p class="note">Ask about our seasonal high-end and exotic coffees.</p>'),
     # Notas
     ('<p class="note">Pregunta por nuestras opciones de leche vegetal.</p>', '<p class="note">Ask about our plant-based milk options.</p>'),
     ('<p class="note">Pregunta por nuestras líneas Exotic y High End de temporada.</p>', '<p class="note">Ask about our seasonal Exotic and High End lines.</p>'),
