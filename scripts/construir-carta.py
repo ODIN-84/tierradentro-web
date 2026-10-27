@@ -46,9 +46,9 @@ FOOT_HOME = '<a class="btn" href="/">Ir al inicio</a>'
 
 # Selector de idioma (la versión en inglés la arma scripts/construir-carta-en.py).
 CSS_IDIOMA = (
-    ".top{position:relative;padding-top:44px}"
-    ".lang{position:absolute;top:10px;right:0;text-decoration:none;font-weight:600;font-size:12px;letter-spacing:.14em;"
-    "text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}"
+    ".top{position:relative;padding-top:60px}"
+    ".lang{position:absolute;top:12px;right:0;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.14em;"
+    "text-transform:uppercase;color:var(--crema);border:1px solid var(--arena);border-radius:999px;padding:9px 18px}"
     ".lang:hover{color:var(--crema);border-color:var(--arena)}\n"
 )
 LINK_IDIOMA = '<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'

@@ -60,7 +60,7 @@ NOMBRES = {
     "Té chai": "Chai tea",
     # Brunch
     "Bowl de fruta": "Fruit bowl",
-    "Avena con fruta": "Oatmeal with fruit",
+    "Avena con fruta": "Bowl with oatmeal",
     "Bagel Philadelphia": "Cream cheese bagel",
     "Bagel Philadelphia y mermelada": "Cream cheese and jam bagel",
     "Bagel con huevo": "Egg bagel",
@@ -166,8 +166,8 @@ DESCRIPCIONES = {
     "Cold brew con leche.": "Cold brew with milk.",
     "Cold brew mezclado con agua tónica.": "Cold brew mixed with tonic water.",
     "Refrescante combinación burbujeante, sirope de naranja artesanal y zumo natural de naranja.": "A refreshing sparkling mix with house-made orange syrup and fresh orange juice.",
-    "Refrescante combinación burbujeante, sirope de panela artesanal con maracuyá.": "A refreshing sparkling mix with house-made panela syrup and passion fruit.",
-    "Refrescante combinación burbujeante, sirope de panela artesanal con lulo.": "A refreshing sparkling mix with house-made panela syrup and lulo, a tangy Andean fruit.",
+    "Refrescante combinación burbujeante, sirope de panela artesanal con maracuyá.": "A refreshing sparkling mix with house-made panela (unrefined cane sugar) syrup and passion fruit.",
+    "Refrescante combinación burbujeante, sirope de panela artesanal con lulo.": "A refreshing sparkling mix with house-made panela (unrefined cane sugar) syrup and lulo, a tangy Andean fruit loved in Colombia's Valle del Cauca.",
     "Espresso vibrante combinado con agua tónica.": "Vibrant espresso combined with tonic water.",
     "Latte frío cremoso y balanceado.": "A creamy, balanced cold latte.",
     "Chocolate, espresso y leche servidos fríos.": "Chocolate, espresso and milk, served cold.",
@@ -176,7 +176,7 @@ DESCRIPCIONES = {
     "Chocolate artesanal con textura cremosa.": "Artisan hot chocolate with a creamy texture.",
     "Mezcla aromática de especias y té negro.": "An aromatic blend of spices and black tea.",
     "Selección de frutas frescas de temporada.": "A selection of fresh seasonal fruit.",
-    "Avena acompañada de fruta fresca y leche.": "Oats with fresh fruit and milk.",
+    "Avena acompañada de fruta fresca y leche.": "Oatmeal served with fresh fruit and milk.",
     "Bagel artesanal con queso Philadelphia.": "Artisan bagel with Philadelphia cream cheese.",
     "Combinación dulce y cremosa con queso Philadelphia y mermelada de frutos rojos.": "Sweet and creamy, with Philadelphia cream cheese and red berry jam.",
     "Bagel caliente con huevo preparado al momento y queso holandés.": "Warm bagel with a freshly cooked egg and Dutch cheese.",
@@ -192,6 +192,18 @@ DESCRIPCIONES = {
     "Perfil balanceado y versátil para el día a día.": "A balanced, versatile profile for every day.",
     "Notas suaves y dulces con tostión equilibrada.": "Smooth, sweet notes with a balanced roast.",
     "Pregunta por nuestros high end y exóticos de temporada.": "Ask about our seasonal high-end and exotic coffees.",
+}
+
+# Productos sin descripción en español cuyo nombre lleva algo muy colombiano: en inglés se les agrega una
+# descripción (en la lista y en el visor de fotos) para que se entienda qué es.
+DESC_SOLO_EN = {
+    "Waffle de pandebono con sirope": "Made with pandebono dough, a Colombian cheese bread made with cassava starch, served with syrup.",
+    "Waffle de pandebono con fresa, arándanos y salsa de chocolate": "Made with pandebono dough, a Colombian cheese bread made with cassava starch.",
+    "Waffle de pandebono con tocineta y huevo": "Made with pandebono dough, a Colombian cheese bread made with cassava starch.",
+    "Torta almojábana": "Inspired by almojábana, a traditional Colombian bread made with corn and fresh cheese.",
+    "Club Colombia Dorada": "Colombian golden lager.",
+    "Botella aguardiente amarillo": "Aguardiente is Colombia's anise-flavored cane spirit; amarillo is the aged, golden version.",
+    "Adición michelada": "Your beer with lime juice and a salted rim.",
 }
 
 # Textos fijos de la página: (español exacto en el HTML, inglés). Se exige que cada uno aparezca.
@@ -260,7 +272,7 @@ TEXTOS = [
     ('<p class="note">Nuestros tés provienen de Asia oriental, Asia meridional y cultivos colombianos.</p>',
      '<p class="note">Our teas come from East Asia, South Asia and Colombian farms.</p>'),
     ('<p class="note">Preparación inspirada en sabores locales.</p>',
-     '<p class="note">Inspired by local flavors. Pandebono is a Colombian cheese bread made with cassava starch.</p>'),
+     '<p class="note">Inspired by local flavors.</p>'),
     # Pie
     ('<p class="motto">De un humano a otro, parchate.</p>', '<p class="motto">From one human to another, come hang out.</p>'),
     ("<p>Tierradentro Café Express · Mall Primavera Life, local 110 · Armenia, Quindío</p>",
@@ -305,12 +317,19 @@ def traducir(html: str) -> str:
         en = nombre(es)
         tag = tag.replace(f'data-name="{es}"', f'data-item="{es}" data-name="{en}"', 1)
         tag = re.sub(r'data-desc="([^"]+)"', lambda d: f'data-desc="{desc(d.group(1))}"', tag)
+        if es in DESC_SOLO_EN:
+            tag = tag.replace('data-desc=""', f'data-desc="{DESC_SOLO_EN[es]}"', 1)
         return tag.replace(f'aria-label="Ver foto de {es}"', f'aria-label="See photo of {en}"')
 
     html = re.sub(r'<button class="thumb"[^>]*>', boton, html)
     html = re.sub(r'(<img src="/img/t[^"]+" alt=")([^"]*)(")', lambda m: m.group(1) + nombre(m.group(2)) + m.group(3), html)
-    html = re.sub(r"<h4>([^<]+)</h4>", lambda m: f"<h4>{nombre(m.group(1))}</h4>", html)
     html = re.sub(r'<p class="desc">([^<]+)</p>', lambda m: f'<p class="desc">{desc(m.group(1))}</p>', html)
+    for es, en in DESC_SOLO_EN.items():
+        sin_desc = f"<h4>{es}</h4></div>"
+        if sin_desc not in html:
+            faltan.append(f"DESC_SOLO_EN (el producto ya tiene descripción o no existe): {es}")
+        html = html.replace(sin_desc, f'<h4>{es}</h4><p class="desc">{en}</p></div>')
+    html = re.sub(r"<h4>([^<]+)</h4>", lambda m: f"<h4>{nombre(m.group(1))}</h4>", html)
 
     for es, en in TEXTOS:
         if es not in html:
