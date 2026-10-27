@@ -13,6 +13,7 @@ Qué hace:
   6. Agrega el selector de idioma (English → /en/menu) y los enlaces hreflang.
   7. Agrega las notas de cata y el origen de los cafés para llevar (NOTAS_CATA) y la línea del café de la casa (CAFE_CASA).
      La descripción de Gondwana del artefacto sale del producto y queda como nota al final de los cafés para llevar (NOTA_LLEVAR).
+  8. Agrega foto a los productos de FOTOS_EXTRA (archivos img/<nombre>.webp y miniatura img/t<nombre>.webp).
 
 Después de correrlo, regenerar la versión en inglés: python scripts/construir-carta-en.py
 
@@ -66,6 +67,12 @@ DESC_GONDWANA = '<p class="desc">Pregunta por nuestros high end y exóticos de t
 NOTA_LLEVAR = '<p class="note">Pregunta por nuestros high end y exóticos de temporada.</p>'
 # Línea bajo el título de la sección Café. Vacía = no se agrega.
 CAFE_CASA = '<p class="casa">Café de la casa: <b>Pangea</b> · Huila · mandarina | chocolate | melaza | nuez</p>'
+# Fotos que aún no están en el artefacto (paso 8). Tomadas en el café; color ajustado al resto de la carta el 2026-10-26.
+FOTOS_EXTRA = {
+    "Té chai": "chai",
+    "Chocolate artesanal con queso": "chocolate_queso",
+    "Té frío": "tefrio",
+}
 CSS_CATA = (
     ".cata{grid-column:1/-1;margin:6px 0 0;font-weight:600;font-size:15px;letter-spacing:.04em;color:var(--arena)}"
     ".origen{grid-column:1/-1;margin:2px 0 0;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}"
@@ -126,6 +133,20 @@ def construir(origen: Path) -> str:
     body_carta = body_carta[:i_fin + 5] + NOTA_LLEVAR + body_carta[i_fin + 5:]
     if CAFE_CASA:
         body_carta = body_carta.replace("<h2>Café</h2></header>", "<h2>Café</h2>" + CAFE_CASA + "</header>", 1)
+
+    # 8. Fotos nuevas para productos que en el artefacto no tienen foto.
+    for nombre, img in FOTOS_EXTRA.items():
+        patron = re.compile(r'<li class="item"><div class="txt"><h4>' + re.escape(nombre)
+                            + r'</h4>(?:<p class="desc">([^<]*)</p>)?</div><div class="price">\$([0-9.]+)</div></li>')
+        m = patron.search(body_carta)
+        if not m:
+            sys.exit(f"No encontré el producto sin foto {nombre!r} en la carta (FOTOS_EXTRA).")
+        desc, precio = m.group(1) or "", m.group(2)
+        boton = (f'<button class="thumb" type="button" data-full="/img/{img}.webp" data-name="{nombre}" data-desc="{desc}" '
+                 f'data-price="{precio}" aria-label="Ver foto de {nombre}"><img src="/img/t{img}.webp" alt="{nombre}" '
+                 f'loading="lazy" decoding="async" width="160" height="160"></button>\n')
+        li = '<li class="item has-photo">' + boton + m.group(0)[len('<li class="item">'):]
+        body_carta = body_carta[:m.start()] + li + body_carta[m.end():]
 
     return (
         '<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n'
