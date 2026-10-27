@@ -89,6 +89,10 @@ img{max-width:100%}
 .btn{display:inline-block;text-decoration:none;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:12px 18px;border:1px solid var(--arena);color:var(--arena)}
 .btn.primary{background:var(--crema);color:var(--carbon);border-color:var(--crema)}
 .btn.sol{border-color:var(--sol);color:var(--sol)}
+/* Botones de la portada: "Ver la carta" grande y centrado; los otros tres centrados debajo */
+.hero-ctas{display:flex;flex-direction:column;align-items:center;gap:14px}
+.hero-ctas .ctas{justify-content:center}
+.btn.big{font-size:20px;letter-spacing:.14em;padding:18px 56px;text-align:center;width:min(100%,420px);box-sizing:border-box}
 
 /* Secciones */
 .sec{padding-block:34px 8px;scroll-margin-top:24px;border-top:1px solid var(--line);margin-top:26px}
@@ -161,11 +165,13 @@ img{max-width:100%}
     </figure>
     <p class="estado" id="estado" aria-live="polite" hidden></p>
     <p class="lead">Café colombiano de origen, tostado por <b>Tierradentro Café &amp; Co.</b>, servido en el Mall Primavera Life. Pasa, pide y parchate.</p>
-    <div class="ctas">
-      <a class="btn primary" href="/carta" data-track="ver_carta">Ver la carta</a>
-      <a class="btn sol" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">WhatsApp</a>
-      <a class="btn" href="#ubicacion" data-track="como_llegar">Cómo llegar</a>
-      <a class="btn" href="/en/menu" hreflang="en" lang="en" data-track="ver_menu_en">Menu in English</a>
+    <div class="hero-ctas">
+      <a class="btn primary big" href="/carta" data-track="ver_carta">Ver la carta</a>
+      <div class="ctas">
+        <a class="btn sol" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">WhatsApp</a>
+        <a class="btn" href="#ubicacion" data-track="como_llegar">Cómo llegar</a>
+        <a class="btn" href="/en/menu" hreflang="en" lang="en" data-track="ver_menu_en">Menu in English</a>
+      </div>
     </div>
   </section>
 
