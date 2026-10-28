@@ -33,12 +33,15 @@ function setup() {
   const hc = hoja_(ss, 'config', ['clave', 'valor']);
   const cfg = leerConfig_(hc);
   Object.keys(CONFIG_DEF).forEach(k => { if (cfg[k] === undefined) cfg[k] = CONFIG_DEF[k]; });
+  // La clave del tablero manda desde la fila clave_admin de la pestaña config: para cambiarla, se escribe ahí y se vuelve a ejecutar setup.
   let key = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY');
+  const enHoja = String(cfg.clave_admin || '').trim();
+  if (enHoja && enHoja !== key) { key = enHoja; PropertiesService.getScriptProperties().setProperty('ADMIN_KEY', key); }
   if (!key) { key = claveNueva_(); PropertiesService.getScriptProperties().setProperty('ADMIN_KEY', key); }
   cfg.clave_admin = key;
   escribirConfig_(hc, cfg);
   hoja_(ss, 'solicitudes', ['fecha', 'codigo', 'mesa', 'nombre', 'personas', 'tel', 'resultado']);
-  Logger.log('Listo. Clave de administración: ' + key + ' (también está en la pestaña config).');
+  Logger.log('Listo. La clave de administración es la de la fila clave_admin de la pestaña config (' + key.length + ' caracteres).');
 }
 function claveNueva_() { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 10; i++) s += a[Math.floor(Math.random() * a.length)]; return s; }
 function hoja_(ss, nombre, encabezados) {
