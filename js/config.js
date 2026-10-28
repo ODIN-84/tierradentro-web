@@ -9,7 +9,7 @@ window.TDE_CONFIG = {
   // Reservas de mesas de la fiesta de salsa (/reservas y /reservas/admin).
   // URL del Apps Script publicado como aplicación web (termina en /exec); ver scripts/reservas-apps-script/LEEME.md.
   // Mientras sea "PENDIENTE", /reservas solo muestra el botón de WhatsApp y /reservas/admin trabaja en modo local (sin respaldo).
-  RESERVAS_API: "PENDIENTE",
+  RESERVAS_API: "https://script.google.com/macros/s/AKfycbz110X_NFPh973j7N5Q-yHfUm6-At2tw6QGxF71bvOr46bWFktTOF8rhs7ot1L3o3QG/exec",
 
   // Línea bajo "Dónde estamos" para encontrar el local dentro del mall. Vacía = no se muestra.
   COMO_LLEGAR_MALL: "Estamos en el piso PB del edificio.",

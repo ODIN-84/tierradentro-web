@@ -2,7 +2,8 @@
  * Reservas de mesas · Fiesta de salsa · Tierradentro Café Express
  * Respaldo de datos para https://tierradentroexpress.com/reservas (clientes) y /reservas/admin (café).
  *
- * Es un Google Apps Script "vinculado" a una hoja de cálculo de Google Sheets de la cuenta del café.
+ * Es un Google Apps Script de la cuenta del café que escribe en la hoja de cálculo "Reservas fiesta de salsa" (SHEET_ID).
+ * Sirve igual como proyecto independiente (script.google.com → Nuevo proyecto) o vinculado a la hoja (Extensiones → Apps Script).
  * Puesta en marcha (una sola vez, 5 minutos): ver scripts/reservas-apps-script/LEEME.md
  *   1. Crear una hoja de cálculo nueva llamada "Reservas fiesta de salsa".
  *   2. Extensiones → Apps Script → pegar este archivo completo en Code.gs → guardar.
@@ -15,6 +16,9 @@
  * La clave de administración vive en las propiedades del script (ADMIN_KEY) y se copia en la pestaña config para que el café la vea.
  */
 
+// ID de la hoja "Reservas fiesta de salsa" del Drive del café (en su URL). Permite que el script viva como proyecto independiente.
+const SHEET_ID = '13rNgnPZZGCJLkhx4N-9hSA078BV8Oka4QhS3iv7XvuA';
+function ss_() { const a = SpreadsheetApp.getActive(); return a || SpreadsheetApp.openById(SHEET_ID); }
 const CAMPOS = ['id', 'num', 'forma', 'zona', 'x', 'y', 'rot', 'asientos', 'grupo', 'estado', 'nombre', 'personas', 'tel', 'nota', 'act'];
 const ESTADOS = ['libre', 'solicitada', 'reservada', 'confirmada', 'llego'];
 const CONFIG_DEF = { nombre: 'Fiesta de salsa', fecha: 'Viernes 30 de octubre de 2026', hora: '9:00 p. m. a 3:00 a. m.', aforo: 250, sentados: 204, abierto: 'si', horas_espera: 48, whatsapp: '573146551487' };
@@ -23,7 +27,7 @@ const SEMILLA = [{"id": "m01", "num": "1", "forma": "cuadrada", "zona": "A", "x"
 
 // ---------- Puesta en marcha ----------
 function setup() {
-  const ss = SpreadsheetApp.getActive();
+  const ss = ss_();
   const hm = hoja_(ss, 'mesas', CAMPOS);
   if (hm.getLastRow() < 2) escribirMesas_(hm, SEMILLA);
   const hc = hoja_(ss, 'config', ['clave', 'valor']);
@@ -75,13 +79,13 @@ function esAdmin_(clave) { const k = PropertiesService.getScriptProperties().get
 
 // ---------- Lecturas ----------
 function estadoPublico_() {
-  const ss = SpreadsheetApp.getActive(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
+  const ss = ss_(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
   const mesas = expirar_(leerMesas_(hoja_(ss, 'mesas', CAMPOS)), cfg);
   const pub = mesas.map(m => ({ id: m.id, num: m.num, forma: m.forma, zona: m.zona, x: m.x, y: m.y, rot: m.rot, asientos: m.asientos, grupo: m.grupo, estado: m.estado === 'libre' ? 'libre' : 'reservada' }));
   return { ok: true, publico: true, config: configPublica_(cfg), mesas: pub, hora: new Date().toISOString() };
 }
 function estadoAdmin_() {
-  const ss = SpreadsheetApp.getActive(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
+  const ss = ss_(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
   const mesas = expirar_(leerMesas_(hoja_(ss, 'mesas', CAMPOS)), cfg);
   delete cfg.clave_admin;
   return { ok: true, publico: false, config: cfg, mesas: mesas, hora: new Date().toISOString() };
@@ -98,7 +102,7 @@ function expirar_(mesas, cfg) {
 
 // ---------- Escrituras ----------
 function solicitar_(b) {
-  const ss = SpreadsheetApp.getActive(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
+  const ss = ss_(); const cfg = leerConfig_(hoja_(ss, 'config', ['clave', 'valor']));
   const nombre = String(b.nombre || '').trim().slice(0, 60), personas = Math.round(+b.personas || 0), tel = String(b.tel || '').replace(/\D/g, '').slice(0, 15);
   const hs = hoja_(ss, 'solicitudes', ['fecha', 'codigo', 'mesa', 'nombre', 'personas', 'tel', 'resultado']);
   const log = (codigo, mesaNum, res) => hs.appendRow([new Date(), codigo, mesaNum, nombre, personas, tel, res]);
@@ -115,7 +119,7 @@ function solicitar_(b) {
   return { ok: true, codigo: codigo, mesa: { id: m.id, num: m.num, asientos: m.asientos, zona: m.zona }, config: configPublica_(cfg) };
 }
 function guardar_(lista) {
-  const hm = hoja_(SpreadsheetApp.getActive(), 'mesas', CAMPOS); const mesas = leerMesas_(hm); let n = 0;
+  const hm = hoja_(ss_(), 'mesas', CAMPOS); const mesas = leerMesas_(hm); let n = 0;
   (lista || []).forEach(raw => {
     const m = limpiar_(raw); if (!m) return;
     const i = mesas.findIndex(x => x.id === m.id);
@@ -125,14 +129,14 @@ function guardar_(lista) {
   return { ok: true, guardadas: n, mesas: mesas };
 }
 function borrar_(id) {
-  const hm = hoja_(SpreadsheetApp.getActive(), 'mesas', CAMPOS); let mesas = leerMesas_(hm);
+  const hm = hoja_(ss_(), 'mesas', CAMPOS); let mesas = leerMesas_(hm);
   mesas = mesas.filter(x => x.id !== String(id || ''));
   mesas.forEach(x => { if (x.grupo === String(id)) { x.grupo = ''; } });
   escribirMesas_(hm, mesas);
   return { ok: true, mesas: mesas };
 }
 function guardarConfig_(c) {
-  const hc = hoja_(SpreadsheetApp.getActive(), 'config', ['clave', 'valor']); const cfg = leerConfig_(hc);
+  const hc = hoja_(ss_(), 'config', ['clave', 'valor']); const cfg = leerConfig_(hc);
   ['nombre', 'fecha', 'hora', 'whatsapp'].forEach(k => { if (c[k] !== undefined) cfg[k] = String(c[k]).slice(0, 120); });
   ['aforo', 'sentados', 'horas_espera'].forEach(k => { if (c[k] !== undefined) cfg[k] = Math.max(0, Math.round(+c[k] || 0)); });
   if (c.abierto !== undefined) cfg.abierto = String(c.abierto).toLowerCase() === 'si' ? 'si' : 'no';
@@ -140,7 +144,7 @@ function guardarConfig_(c) {
   return { ok: true, config: cfg };
 }
 function reset_() {
-  const hm = hoja_(SpreadsheetApp.getActive(), 'mesas', CAMPOS);
+  const hm = hoja_(ss_(), 'mesas', CAMPOS);
   escribirMesas_(hm, SEMILLA.map(m => Object.assign({}, m)));
   return { ok: true, mesas: SEMILLA };
 }

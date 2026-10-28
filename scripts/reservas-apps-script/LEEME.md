@@ -18,7 +18,21 @@ instalar nada y Juanca puede ver las reservas también en la hoja.
    fecha y la hora de la fiesta para el mes siguiente. Para empezar una fiesta nueva: Editar plano → **Volver al plano del Anexo 1**
    (borra todas las reservas) o liberar mesa por mesa.
 
-## Puesta en marcha (una sola vez, unos 5 minutos, con la cuenta tierradentrocafeexpress@gmail.com)
+## Estado (2026-10-27): ya está en marcha
+
+- Hoja: "Reservas fiesta de salsa" en el Drive de tierradentrocafeexpress@gmail.com (su ID está en `SHEET_ID` dentro de `Code.gs`).
+- Proyecto de Apps Script **"Reservas fiesta de salsa"** creado como proyecto independiente desde script.google.com (el menú
+  Extensiones → Apps Script de la hoja fallaba con esa cuenta), con `setup` ejecutado y autorizado.
+- Implementación "reservas", versión 1, app web ejecutada como el café con acceso para cualquiera. La URL está en `js/config.js`.
+- La clave del tablero está en la fila `clave_admin` de la pestaña `config` de la hoja.
+
+Para cambios futuros en `Code.gs`: abrir script.google.com con la cuenta del café → proyecto "Reservas fiesta de salsa" → pegar el
+código → guardar → **Implementar → Administrar implementaciones → lápiz → Versión: Nueva versión → Implementar**. La URL no cambia.
+
+## Puesta en marcha desde cero (si hubiera que repetirla, unos 5 minutos, con la cuenta tierradentrocafeexpress@gmail.com)
+
+Si el paso 2 falla con "No se pudo abrir el archivo en este momento", hacerlo como proyecto independiente: script.google.com →
+**Nuevo proyecto** → renombrar → pegar `Code.gs` (ya trae `SHEET_ID` de la hoja) y seguir desde el paso 4.
 
 1. En Google Drive, crear una **hoja de cálculo nueva** y llamarla `Reservas fiesta de salsa`.
 2. Menú **Extensiones → Apps Script**. Se abre un editor con un archivo `Código.gs` vacío.
