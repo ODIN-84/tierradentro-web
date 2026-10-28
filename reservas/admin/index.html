@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Reservas · Administración · Tierradentro Café Express</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#feffdb">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Tablero interno del café (tema Crema; Carbón si el celular está en modo oscuro). Mismo diseño que el tablero del agente. */
+:root{
+  --surface:#feffdb; --surface-raised:#ffffff; --ink:#111113; --ink-muted:#5a5a5a; --line:#cec7bf;
+  --crema:#feffdb; --carbon:#111113; --madera:#af753e; --brote:#87ba77; --bosque:#344e2a; --vino:#740001; --naranja:#fe502c; --sol:#ffce5c; --granate:#591313;
+  --font-display:"Archivo Black","Greater Theory",sans-serif;
+  --font-text:"Barlow Semi Condensed","Bahnschrift SemiBold Condensed",sans-serif;
+  --p-piso:#efece4; --p-piso-junta:#e2ded4; --p-muro:#d9d5cc; --p-muro-borde:#b8b3a8; --p-texto:#5a5a5a; --p-exterior:#dfe3d6;
+  --p-madera:#c9a06b; --p-madera-veta:#b88b57; --p-planta:#7ea36f; --p-planta2:#5b8a52; --p-barra:#6e7a2c; --p-corredor:#c84a3a;
+  --p-tarima:#ffffff; --p-tecnica:#f3d78a; --p-silla:#8a8f86; --p-silla-borde:#5f645c;
+  --st-libre:#ffffff; --st-libre-borde:#9a958c; --st-sol:#fff1bf; --st-sol-borde:#d9a62b; --st-res:#ffce5c; --st-res-borde:#b8862a;
+  --st-conf:#87ba77; --st-conf-borde:#4f7f42; --st-llego:#344e2a; --st-llego-borde:#1f3119; --st-llego-texto:#feffdb;
+  --shadow:0 2px 10px rgba(17,17,19,.12);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --surface:#111113; --surface-raised:#1d1d20; --ink:#feffdb; --ink-muted:#a8a49b; --line:#3a3a3d;
+  --p-piso:#26262a; --p-piso-junta:#2e2e33; --p-muro:#3a3a3f; --p-muro-borde:#55555b; --p-texto:#b9b6ad; --p-exterior:#1f2a1f;
+  --p-madera:#7a5a37; --p-madera-veta:#654827; --p-planta:#3f6b3a; --p-planta2:#2e5129; --p-barra:#5f6a24; --p-corredor:#c84a3a;
+  --p-tarima:#3c3c42; --p-tecnica:#6b5a24; --p-silla:#5c6058; --p-silla-borde:#8b9086;
+  --st-libre:#2a2a2f; --st-libre-borde:#8a877f; --st-sol:#5c4a17; --st-sol-borde:#d9a62b; --st-res:#b58f2e; --st-res-borde:#ffce5c;
+  --st-conf:#4f7f42; --st-conf-borde:#87ba77; --st-llego:#87ba77; --st-llego-borde:#c9e6bd; --st-llego-texto:#111113;
+  --shadow:0 2px 10px rgba(0,0,0,.45); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --surface:#111113; --surface-raised:#1d1d20; --ink:#feffdb; --ink-muted:#a8a49b; --line:#3a3a3d;
+  --p-piso:#26262a; --p-piso-junta:#2e2e33; --p-muro:#3a3a3f; --p-muro-borde:#55555b; --p-texto:#b9b6ad; --p-exterior:#1f2a1f;
+  --p-madera:#7a5a37; --p-madera-veta:#654827; --p-planta:#3f6b3a; --p-planta2:#2e5129; --p-barra:#5f6a24; --p-corredor:#c84a3a;
+  --p-tarima:#3c3c42; --p-tecnica:#6b5a24; --p-silla:#5c6058; --p-silla-borde:#8b9086;
+  --st-libre:#2a2a2f; --st-libre-borde:#8a877f; --st-sol:#5c4a17; --st-sol-borde:#d9a62b; --st-res:#b58f2e; --st-res-borde:#ffce5c;
+  --st-conf:#4f7f42; --st-conf-borde:#87ba77; --st-llego:#87ba77; --st-llego-borde:#c9e6bd; --st-llego-texto:#111113;
+  --shadow:0 2px 10px rgba(0,0,0,.45); color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--font-text);font-size:16px;line-height:1.3;display:flex;flex-direction:column;min-height:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+header{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding:10px 16px}
+.hd{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hd img{width:44px;height:44px;flex:none}
+.hd-t{min-width:0;flex:1 1 220px}
+.hd h1{font-family:var(--font-display);font-size:clamp(17px,2.4vw,24px);letter-spacing:.02em;text-transform:uppercase;margin:0;line-height:1.05;text-wrap:balance}
+.hd .ev{margin:2px 0 0;color:var(--ink-muted);font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hd .ev button{background:none;border:0;padding:0 4px;color:var(--ink-muted);text-decoration:underline;text-underline-offset:3px}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--surface-raised);border:1px solid var(--line);border-radius:6px;padding:6px 10px;min-width:92px}
+.stat b{display:block;font-family:var(--font-display);font-size:20px;line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em}
+.stat.alert b{color:var(--naranja)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface-raised)}
+.seg button{border:0;background:none;padding:7px 12px;font-weight:600;color:var(--ink-muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.btn{border:1px solid var(--line);background:var(--surface-raised);border-radius:6px;padding:7px 12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:inherit}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn.danger{color:var(--vino);border-color:var(--vino)}
+.btn.wa{background:var(--sol);color:#111113;border-color:var(--sol)}
+.btn.sm{padding:5px 9px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:default}
+.zoom{display:inline-flex;gap:4px;margin-left:auto}
+.zoom .btn{padding:6px 10px;min-width:36px;justify-content:center}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--ink-muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid;vertical-align:-2px;margin-right:4px}
+.aviso{margin-top:8px;font-size:14px;padding:8px 12px;border-radius:6px;background:var(--st-sol);border:1px solid var(--st-sol-borde);color:var(--ink)}
+.aviso.err{background:var(--surface-raised);border-color:var(--vino)}
+main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:0;min-height:0}
+.plano-wrap{position:relative;min-width:0;background:var(--p-piso);border-right:1px solid var(--line);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+.plano-wrap svg{display:block;width:100%;height:100%;min-height:62vh;cursor:grab}
+.plano-wrap.dragging svg{cursor:grabbing}
+.hint{position:absolute;left:12px;bottom:10px;font-size:12px;color:var(--ink-muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px;opacity:.9;pointer-events:none}
+aside{min-width:0;display:flex;flex-direction:column;background:var(--surface);padding:12px 16px;gap:10px;overflow:auto}
+aside h2{font-family:var(--font-display);font-size:15px;text-transform:uppercase;letter-spacing:.04em;margin:0}
+.search{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface-raised)}
+.lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.lista li{display:grid;grid-template-columns:52px 1fr auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface-raised);cursor:pointer;border-left-width:5px}
+.lista li:hover{border-color:var(--ink-muted)}
+.lista li.sel{outline:2px solid var(--ink)}
+.lista .n{font-family:var(--font-display);font-size:18px;line-height:1}
+.lista .n small{display:block;font-family:var(--font-text);font-size:11px;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.05em}
+.lista .who{min-width:0;font-weight:600}
+.lista .who span{display:block;font-weight:500;color:var(--ink-muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lista .pax{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.lista .pax small{display:block;font-size:11px;color:var(--ink-muted);font-weight:500}
+.lista li[data-st="libre"]{border-left-color:var(--st-libre-borde)}
+.lista li[data-st="solicitada"]{border-left-color:var(--st-sol-borde)}
+.lista li[data-st="reservada"]{border-left-color:var(--st-res-borde)}
+.lista li[data-st="confirmada"]{border-left-color:var(--st-conf-borde)}
+.lista li[data-st="llego"]{border-left-color:var(--st-llego)}
+.vacio{color:var(--ink-muted);font-size:14px;padding:12px;border:1px dashed var(--line);border-radius:6px}
+.panel{display:flex;flex-direction:column;gap:10px}
+.panel .top{display:flex;align-items:center;gap:8px}
+.panel .top h2{flex:1}
+.chip{display:inline-block;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border:1px solid}
+.chip[data-st="libre"]{background:var(--st-libre);border-color:var(--st-libre-borde)}
+.chip[data-st="solicitada"]{background:var(--st-sol);border-color:var(--st-sol-borde)}
+.chip[data-st="reservada"]{background:var(--st-res);border-color:var(--st-res-borde);color:#111113}
+.chip[data-st="confirmada"]{background:var(--st-conf);border-color:var(--st-conf-borde);color:#111113}
+.chip[data-st="llego"]{background:var(--st-llego);border-color:var(--st-llego-borde);color:var(--st-llego-texto)}
+.f{display:flex;flex-direction:column;gap:4px}
+.f label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);font-weight:600}
+.f input,.f select,.f textarea{padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface-raised);width:100%;min-width:0}
+.f textarea{min-height:56px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.acciones{display:flex;gap:8px;flex-wrap:wrap}
+.estado-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.estado-btns button{border:1px solid var(--line);border-radius:6px;padding:8px 6px;background:var(--surface-raised);font-weight:600;font-size:14px}
+.estado-btns button[aria-pressed="true"]{outline:3px solid var(--ink);outline-offset:-3px}
+.estado-btns button[data-st="solicitada"]{background:var(--st-sol)}
+.estado-btns button[data-st="reservada"]{background:var(--st-res);color:#111113}
+.estado-btns button[data-st="confirmada"]{background:var(--st-conf);color:#111113}
+.estado-btns button[data-st="llego"]{background:var(--st-llego);color:var(--st-llego-texto)}
+.confirm{display:flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--vino);border-radius:6px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chips .chip{display:inline-flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:13px}
+.chips .chip button{border:0;background:none;padding:0 2px;font-size:16px;line-height:1;color:inherit}
+.unir{display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:6px}
+.unir select{padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface-raised);min-width:0}
+.nota-ed{font-size:13px;color:var(--ink-muted)}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:6px;font-weight:600;z-index:20;box-shadow:var(--shadow);max-width:90vw}
+.dlg{position:fixed;inset:0;background:rgba(17,17,19,.5);display:flex;align-items:center;justify-content:center;z-index:30;padding:16px}
+.dlg > div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;width:min(480px,100%);display:flex;flex-direction:column;gap:10px;max-height:90vh;overflow:auto}
+.dlg h2{font-family:var(--font-display);font-size:16px;text-transform:uppercase;margin:0}
+svg text{font-family:var(--font-text);pointer-events:none}
+.lbl{fill:var(--p-texto);font-size:15px;font-weight:700;letter-spacing:.08em;text-anchor:middle;text-transform:uppercase}
+.lbl.sm{font-size:11px;font-weight:600;letter-spacing:.06em}
+.mesa{cursor:grab}
+.mesa:active{cursor:grabbing}
+.mesa .top{stroke-width:2.5}
+.mesa[data-st="libre"] .top{fill:var(--st-libre);stroke:var(--st-libre-borde)}
+.mesa[data-st="solicitada"] .top{fill:var(--st-sol);stroke:var(--st-sol-borde)}
+.mesa[data-st="reservada"] .top{fill:var(--st-res);stroke:var(--st-res-borde)}
+.mesa[data-st="confirmada"] .top{fill:var(--st-conf);stroke:var(--st-conf-borde)}
+.mesa[data-st="llego"] .top{fill:var(--st-llego);stroke:var(--st-llego-borde)}
+.mesa .num{font-family:var(--font-display);font-size:19px;text-anchor:middle;fill:var(--ink)}
+.mesa[data-st="reservada"] .num,.mesa[data-st="confirmada"] .num{fill:#111113}
+.mesa[data-st="llego"] .num{fill:var(--st-llego-texto)}
+.mesa .nom{font-size:11px;font-weight:700;text-anchor:middle;fill:var(--ink)}
+.mesa .pax{font-size:10px;font-weight:600;text-anchor:middle;fill:var(--ink-muted)}
+.mesa .silla{fill:var(--p-silla);stroke:var(--p-silla-borde);stroke-width:1}
+.mesa .num.in{font-size:16px}
+.mesa .in.pax{font-size:9.5px;font-weight:700;fill:var(--ink-muted)}
+.mesa[data-st="reservada"] .in,.mesa[data-st="confirmada"] .in{fill:#111113}
+.mesa[data-st="llego"] .in{fill:var(--st-llego-texto)}
+.enlace{stroke:var(--naranja);stroke-width:3;stroke-dasharray:6 5;opacity:.8}
+.mesa.sel .top{stroke:var(--naranja);stroke-width:4}
+@media (max-width:900px){
+  header{position:static}
+  .hd img{width:34px;height:34px}
+  .stats{width:100%}
+  .stat{flex:1 1 0;min-width:0;padding:5px 8px}
+  .stat b{font-size:17px}
+  .stat span{font-size:10px;letter-spacing:.03em}
+  html,body{height:auto;min-height:100%}
+  main{display:flex;flex-direction:column}
+  .plano-wrap{border-right:0;border-bottom:1px solid var(--line);height:56vh;flex:none}
+  .plano-wrap svg{min-height:0;height:100%}
+  aside{overflow:visible}
+  aside.sheet{position:fixed;left:0;right:0;bottom:0;max-height:78vh;overflow:auto;-webkit-overflow-scrolling:touch;z-index:15;border-top:1px solid var(--line);border-radius:12px 12px 0 0;box-shadow:0 -6px 24px rgba(0,0,0,.25);padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .zoom{margin-left:0}
+}
+</style>
+<script src="/js/config.js"></script>
+<script src="/js/plano-salsa.js"></script>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <img src="/img/logo.webp" alt="Tierradentro Café Express" width="44" height="44">
+    <div class="hd-t">
+      <h1>Reservas de mesas</h1>
+      <p class="ev"><span id="evNombre">Fiesta de salsa</span> · <span id="evFecha"></span> · <span id="evHora"></span>
+        <button type="button" id="btnEvento" title="Editar datos del evento">editar</button></p>
+    </div>
+    <div class="stats" aria-live="polite">
+      <div class="stat"><b id="stMesas">0 / 0</b><span>Mesas reservadas</span></div>
+      <div class="stat"><b id="stPersonas">0</b><span>Personas con mesa</span></div>
+      <div class="stat" id="stCuposBox"><b id="stCupos">0</b><span>Puestos libres</span></div>
+      <div class="stat" id="stSolBox"><b id="stSol">0</b><span>Por confirmar</span></div>
+    </div>
+  </div>
+  <div class="tools">
+    <div class="seg" role="group" aria-label="Modo">
+      <button type="button" data-mode="reservas" aria-pressed="true">Reservas</button>
+      <button type="button" data-mode="plano" aria-pressed="false">Editar plano</button>
+    </div>
+    <span class="legend" id="legend">
+      <span><i style="background:var(--st-libre);border-color:var(--st-libre-borde)"></i>Libre</span>
+      <span><i style="background:var(--st-sol);border-color:var(--st-sol-borde)"></i>Por confirmar</span>
+      <span><i style="background:var(--st-res);border-color:var(--st-res-borde)"></i>Reservada</span>
+      <span><i style="background:var(--st-conf);border-color:var(--st-conf-borde)"></i>Confirmada</span>
+      <span><i style="background:var(--st-llego);border-color:var(--st-llego-borde)"></i>Llegaron</span>
+    </span>
+    <a class="btn sm" href="/reservas" target="_blank" rel="noopener">Ver página de clientes</a>
+    <span class="zoom">
+      <button type="button" class="btn" id="zIn" aria-label="Acercar">+</button>
+      <button type="button" class="btn" id="zOut" aria-label="Alejar">−</button>
+      <button type="button" class="btn" id="zFit" aria-label="Ver todo">Todo</button>
+    </span>
+  </div>
+  <div class="aviso" id="aviso" hidden></div>
+</header>
+<main>
+  <div class="plano-wrap" id="planoWrap">
+    <svg id="plano" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano del piso PB del mall Primavera Life con las mesas de la fiesta"></svg>
+    <div class="hint" id="hint">Arrastra una mesa para reubicarla · arrastra el piso para mover el plano · toca una mesa para ver su reserva</div>
+  </div>
+  <aside id="aside">
+    <div id="vistaLista">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <h2 style="flex:1">Mesas</h2>
+        <button type="button" class="btn sm" id="btnCsv">Descargar lista</button>
+        <button type="button" class="btn sm" id="btnRecargar" title="Volver a leer las reservas">↻</button>
+      </div>
+      <input class="search" id="buscar" type="search" placeholder="Buscar por nombre, mesa o celular" aria-label="Buscar reserva" autocomplete="off">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0" id="filtros">
+        <button type="button" class="btn sm" data-f="todas" aria-pressed="true">Todas</button>
+        <button type="button" class="btn sm" data-f="con" aria-pressed="false">Con reserva</button>
+        <button type="button" class="btn sm" data-f="libre" aria-pressed="false">Libres</button>
+        <button type="button" class="btn sm" data-f="solicitada" aria-pressed="false">Por confirmar</button>
+      </div>
+      <ul class="lista" id="lista"></ul>
+      <p class="vacio" id="listaVacia" hidden>Ninguna mesa coincide con la búsqueda.</p>
+      <div id="herrPlano" hidden style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+        <h2>Editar plano</h2>
+        <p class="nota-ed">Arrastra cada mesa a su sitio. Toca una mesa para cambiar su número, puestos, forma o zona, o para quitarla.</p>
+        <div class="acciones">
+          <button type="button" class="btn" data-add="redonda">+ Redonda · 4</button>
+          <button type="button" class="btn" data-add="cuadrada">+ Cuadrada · 6</button>
+          <button type="button" class="btn" data-add="barra">+ Barra · 8</button>
+        </div>
+        <p class="nota-ed">Para juntar dos cuadradas, arrástralas hasta que se toquen: las sillas de en medio desaparecen solas. Para una reserva grande, en el modo Reservas se unen mesas desde el panel de la mesa.</p>
+        <button type="button" class="btn danger" id="btnReset">Volver al plano del Anexo 1</button>
+        <div class="confirm" id="resetConfirm" hidden><span>Se borran todas las reservas y se vuelve a las 39 mesas del croquis (16 redondas, 1 barra y 22 cuadradas: 204 puestos).</span><button type="button" class="btn sm danger" id="resetSi">Sí, volver</button><button type="button" class="btn sm" id="resetNo">No</button></div>
+      </div>
+    </div>
+    <div id="vistaMesa" class="panel" hidden></div>
+  </aside>
+</main>
+
+<div class="dlg" id="dlgEvento" hidden>
+  <div>
+    <h2>Datos del evento</h2>
+    <div class="f"><label for="evN">Nombre</label><input id="evN"></div>
+    <div class="f"><label for="evF">Fecha (texto)</label><input id="evF"></div>
+    <div class="f"><label for="evH">Hora</label><input id="evH"></div>
+    <div class="row">
+      <div class="f"><label for="evA">Aforo total</label><input id="evA" type="number" min="0" inputmode="numeric"></div>
+      <div class="f"><label for="evS">Sentados (plan de contingencia)</label><input id="evS" type="number" min="0" inputmode="numeric"></div>
+    </div>
+    <div class="row">
+      <div class="f"><label for="evAb">Reservas en la web</label><select id="evAb"><option value="si">Abiertas</option><option value="no">Cerradas</option></select></div>
+      <div class="f"><label for="evHE">Horas para confirmar una solicitud</label><input id="evHE" type="number" min="0" inputmode="numeric"></div>
+    </div>
+    <div class="acciones"><button type="button" class="btn primary" id="evGuardar">Guardar</button><button type="button" class="btn" id="evCancelar">Cancelar</button></div>
+  </div>
+</div>
+
+<div class="dlg" id="dlgClave" hidden>
+  <div>
+    <h2>Tablero del café</h2>
+    <p class="nota-ed" style="margin:0">Escribe la clave de administración (está en la pestaña <b>config</b> de la hoja "Reservas fiesta de salsa"). Queda guardada en este dispositivo.</p>
+    <div class="f"><label for="clave">Clave</label><input id="clave" type="password" autocomplete="current-password"></div>
+    <p class="nota-ed" id="claveErr" hidden style="color:var(--vino)">Clave incorrecta.</p>
+    <div class="acciones"><button type="button" class="btn primary" id="claveEntrar">Entrar</button></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const P = window.TDE_PLANO, cfg = window.TDE_CONFIG || {};
+const { FORMAS, ZONAS, ESTADOS, CON_RESERVA, DEFAULTS, CONFIG_DEF, esc } = P;
+const $ = s => document.querySelector(s);
+const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+const API = (cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : (esLocal ? '/api' : '');
+const WA_CAFE = cfg.WHATSAPP || '573146551487';
+const LS_KEY = 'tde-reservas-admin', LS_CLAVE = 'tde-reservas-clave';
+const S = { mesas: new Map(), config: { ...CONFIG_DEF }, mode: 'reservas', sel: null, filtro: 'todas', q: '', clave: '', local: !API, ocupado: 0 };
+const svg = $('#plano'), wrap = $('#planoWrap'), aside = $('#aside');
+const gMesas = P.montar(svg);
+const vista = P.crearVista(svg, wrap, {
+  onTap: id => { if (id) { const m = S.mesas.get(id); if (S.mode === 'reservas' && m && m.grupo && S.mesas.has(m.grupo) && S.sel !== m.grupo) { seleccionar(m.grupo); return; } seleccionar(id); } else if (S.sel && !esMovil()) { S.sel = null; render(); } },
+  posicion: id => S.mesas.get(id),
+  puedeArrastrar: () => true,
+  onMover: (id, x, y) => { const m = S.mesas.get(id); if (m) { m.x = x; m.y = y; } },
+  onSoltar: id => { const m = S.mesas.get(id); if (m) guardarMesa({ ...m }); }
+});
+$('#zIn').addEventListener('click', vista.zoomIn); $('#zOut').addEventListener('click', vista.zoomOut); $('#zFit').addEventListener('click', vista.fit);
+function esMovil(){ return window.matchMedia('(max-width:900px)').matches; }
+let selectKind = 'mesa';
+
+// ---------- Respaldo: Apps Script (o modo local sin respaldo) ----------
+function loadLocal(){ try { const j = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); if (j && j.mesas) { S.mesas = new Map(Object.entries(j.mesas).map(([k, v]) => [k, P.normalizar(v)])); if (j.config) S.config = { ...CONFIG_DEF, ...j.config }; return true; } } catch (e) {} return false; }
+function saveLocal(){ try { localStorage.setItem(LS_KEY, JSON.stringify({ mesas: Object.fromEntries(S.mesas), config: S.config })); } catch (e) {} }
+async function api(accion, datos){
+  if (!API) return null;
+  S.ocupado++; $('#btnRecargar').disabled = true;
+  try {
+    const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion, clave: S.clave, ...(datos || {}) }) });
+    const d = await r.json();
+    if (!d.ok) { if (d.error === 'clave') { pedirClave(true); } else aviso('No se pudo guardar (' + (d.error || 'error') + '). ' + (d.detalle || ''), true); return null; }
+    return d;
+  } catch (e) { aviso('Sin conexión con el respaldo. Revisa la red y recarga.', true); return null; }
+  finally { S.ocupado--; if (!S.ocupado) $('#btnRecargar').disabled = false; }
+}
+function aplicarEstado(d){
+  if (!d) return;
+  if (d.config) S.config = { ...CONFIG_DEF, ...d.config };
+  if (d.mesas) { S.mesas = new Map(d.mesas.map(m => { const n = P.normalizar(m); return [n.id, n]; })); if (S.sel && !S.mesas.has(S.sel)) S.sel = null; }
+  render();
+}
+async function cargar(){ if (!API) return; const d = await api('estado'); if (d) { aplicarEstado(d); aviso(''); } }
+function guardarMesa(m){
+  m.act = new Date().toISOString(); S.mesas.set(m.id, m); render();
+  if (API) api('guardar', { mesa: m }).then(d => { if (d && d.mesas) aplicarEstado(d); }); else saveLocal();
+}
+function guardarVarias(lista){
+  for (const m of lista) { m.act = new Date().toISOString(); S.mesas.set(m.id, m); } render();
+  if (API) api('guardar_varias', { mesas: lista }).then(d => { if (d && d.mesas) aplicarEstado(d); }); else saveLocal();
+}
+function borrarMesa(id){
+  const m = S.mesas.get(id);
+  if (m) for (const o of P.miembros(m, S.mesas)) separar(o);
+  S.mesas.delete(id); if (S.sel === id) S.sel = null; render();
+  if (API) api('borrar', { id }).then(d => { if (d && d.mesas) aplicarEstado(d); }); else saveLocal();
+}
+function guardarConfig(){ render(); if (API) api('config', { config: S.config }).then(d => { if (d && d.config) { S.config = { ...CONFIG_DEF, ...d.config }; render(); } }); else saveLocal(); }
+async function resetPlano(){
+  S.mesas = new Map(DEFAULTS.map(m => [m.id, { ...m }])); S.sel = null; render();
+  if (API) { const d = await api('reset'); if (d) aplicarEstado(d); } else saveLocal();
+  toast('Plano restablecido');
+}
+// Mesas unidas (una reserva en varias mesas): la principal tiene grupo=''; las unidas guardan el id de la principal
+function raiz(m){ return P.raiz(m, S.mesas); } function miembros(m){ return P.miembros(m, S.mesas); } function puestosGrupo(m){ return P.puestosGrupo(m, S.mesas); }
+function unir(principal, otra){
+  if (!principal || !otra || principal.id === otra.id) return; const p = raiz(principal); if (otra.grupo === p.id) return;
+  const cambios = miembros(otra).map(o => ({ ...o, grupo: '', estado: 'libre', nombre: '', personas: 0, tel: '', nota: '' }));
+  cambios.push({ ...otra, grupo: p.id, estado: p.estado, nombre: p.nombre, tel: p.tel, personas: 0, nota: '' });
+  guardarVarias(cambios);
+}
+function separar(otra){ if (!otra || !otra.grupo) return; guardarMesa({ ...otra, grupo: '', estado: 'libre', nombre: '', personas: 0, tel: '', nota: '' }); }
+function propagar(p){ const c = miembros(p).filter(o => o.estado !== p.estado || o.nombre !== p.nombre || o.tel !== p.tel).map(o => ({ ...o, estado: p.estado, nombre: p.nombre, tel: p.tel })); if (c.length) guardarVarias(c); }
+
+// ---------- Clave ----------
+function pedirClave(error){ $('#claveErr').hidden = !error; $('#dlgClave').hidden = false; $('#clave').value = ''; $('#clave').focus(); }
+$('#claveEntrar').addEventListener('click', entrar); $('#clave').addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); });
+async function entrar(){
+  const c = $('#clave').value.trim(); if (!c) return; S.clave = c;
+  const d = await api('estado');
+  if (d) { try { localStorage.setItem(LS_CLAVE, c); } catch (e) {} $('#dlgClave').hidden = true; aplicarEstado(d); aviso(''); vista.fit(); }
+}
+
+// ---------- Arranque ----------
+S.mesas = new Map(DEFAULTS.map(m => [m.id, { ...m }]));
+render(); vista.fit(); requestAnimationFrame(vista.fit); window.addEventListener('load', vista.fit);
+if (!API) { S.local = true; if (loadLocal()) render(); aviso('Sin respaldo configurado (RESERVAS_API en js/config.js): los cambios se guardan solo en este navegador y la página de clientes no recibe reservas.'); }
+else {
+  try { S.clave = localStorage.getItem(LS_CLAVE) || ''; } catch (e) {}
+  if (S.clave) cargar().then(() => { if (!$('#dlgClave').hidden) return; }); else pedirClave(false);
+  setInterval(() => { if (document.visibilityState === 'visible' && S.clave && !S.ocupado) cargar(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.clave) cargar(); });
+}
+$('#btnRecargar').addEventListener('click', () => cargar());
+
+// ---------- Render ----------
+function render(){ P.renderMesas(gMesas, S.mesas, { sel: S.sel }); renderStats(); renderLista(); renderPanel(); }
+function totales(){ let mesasRes = 0, personas = 0, asientos = 0, sol = 0; for (const m of S.mesas.values()) { asientos += m.asientos | 0; if (CON_RESERVA.has(m.estado)) { mesasRes++; personas += m.personas | 0; } if (m.estado === 'solicitada' && !m.grupo) sol++; } return { mesasRes, personas, asientos, sol, total: S.mesas.size }; }
+function renderStats(){
+  const t = totales();
+  $('#stMesas').textContent = `${t.mesasRes} / ${t.total}`; $('#stPersonas').textContent = t.personas;
+  const cupos = t.asientos - t.personas; $('#stCupos').textContent = cupos; $('#stCuposBox').classList.toggle('alert', cupos < 0);
+  $('#stSol').textContent = t.sol; $('#stSolBox').classList.toggle('alert', t.sol > 0);
+  $('#evNombre').textContent = S.config.nombre; $('#evFecha').textContent = S.config.fecha; $('#evHora').textContent = S.config.hora + (String(S.config.abierto) === 'no' ? ' · reservas web cerradas' : '');
+  $('#stCuposBox').title = `${t.asientos} puestos en ${t.total} mesas · ${S.config.sentados} sentados según el plan de contingencia`;
+}
+function ordenadas(){ return [...S.mesas.values()].sort((a, b) => (parseInt(a.num) || 9999) - (parseInt(b.num) || 9999) || String(a.num).localeCompare(String(b.num))); }
+function renderLista(){
+  const ul = $('#lista'); const q = S.q.trim().toLowerCase(); let html = ''; let n = 0;
+  for (const m of ordenadas()) {
+    if (S.filtro === 'con' && !CON_RESERVA.has(m.estado)) continue;
+    if (S.filtro === 'libre' && m.estado !== 'libre') continue;
+    if (S.filtro === 'solicitada' && m.estado !== 'solicitada') continue;
+    if (q && !(String(m.num).toLowerCase() === q || (m.nombre || '').toLowerCase().includes(q) || (m.tel || '').includes(q) || (m.nota || '').toLowerCase().includes(q))) continue;
+    n++;
+    const r = raiz(m), esMiembro = r && r.id !== m.id, ms = miembros(m);
+    const who = CON_RESERVA.has(m.estado) ? esc(m.nombre || 'Sin nombre') : 'Libre';
+    let sub = CON_RESERVA.has(m.estado) ? ESTADOS[m.estado] + (m.nota ? ' · ' + esc(m.nota) : '') : ZONAS[m.zona] || '';
+    if (esMiembro) sub = 'Unida a la mesa ' + esc(r.num); else if (ms.length) sub = 'Con las mesas ' + ms.map(o => esc(o.num)).join(', ') + ' · ' + puestosGrupo(m) + ' puestos';
+    const pax = esMiembro ? '↗' : CON_RESERVA.has(m.estado) ? (m.personas | 0) : '–';
+    html += `<li data-id="${esc(m.id)}" data-st="${m.estado}" class="${S.sel === m.id ? 'sel' : ''}" tabindex="0" role="button"><div class="n">${esc(m.num)}<small>${FORMAS[m.forma].corto}</small></div><div class="who">${who}<span>${sub}</span></div><div class="pax">${pax}<small>de ${ms.length ? puestosGrupo(m) : m.asientos}</small></div></li>`;
+  }
+  ul.innerHTML = html; $('#listaVacia').hidden = n > 0;
+}
+function waCliente(m){
+  const num = P.telWa(m.tel); if (!num) return '';
+  const msg = `Hola ${m.nombre || ''}. Te confirmamos la ${P.etiquetaGrupo(m, S.mesas).toLowerCase()} para la ${S.config.nombre || 'fiesta de salsa'} del ${S.config.fecha || ''}, ${m.personas || ''} personas. ¡Nos vemos en Tierradentro Café Express, Mall Primavera Life!`;
+  return 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+}
+function renderPanel(){
+  const m = S.sel ? S.mesas.get(S.sel) : null;
+  const vm = $('#vistaMesa'), vl = $('#vistaLista'); const sheet = esMovil();
+  if (!m) { vm.hidden = true; vl.hidden = false; aside.classList.remove('sheet'); return; }
+  vl.hidden = true; vm.hidden = false; aside.classList.toggle('sheet', sheet);
+  const plano = S.mode === 'plano';
+  const ms = miembros(m), r = raiz(m), esMiembro = r && r.id !== m.id;
+  const btnsEstado = Object.entries(ESTADOS).map(([k, v]) => `<button type="button" data-st="${k}" aria-pressed="${m.estado === k}">${v}</button>`).join('');
+  const candidatas = ordenadas().filter(o => o.id !== m.id && !o.grupo && !miembros(o).length && o.estado === 'libre');
+  const unidasHtml = esMiembro
+    ? `<div class="f"><label>Mesas unidas</label><p class="nota-ed" style="margin:0">Esta mesa está unida a la <b>mesa ${esc(r.num)}</b> (${esc(r.nombre || 'sin nombre')}). La reserva se edita desde esa mesa.</p><div class="acciones"><button type="button" class="btn sm" data-act="irRaiz">Ir a la mesa ${esc(r.num)}</button><button type="button" class="btn sm" data-act="separar" data-id="${esc(m.id)}">Separar esta mesa</button></div></div>`
+    : `<div class="f"><label>Mesas unidas · ${puestosGrupo(m)} puestos en total</label>
+        <div class="chips">${ms.length ? ms.map(o => `<span class="chip" data-st="${o.estado}">Mesa ${esc(o.num)} · ${o.asientos} p. <button type="button" data-act="separar" data-id="${esc(o.id)}" aria-label="Separar la mesa ${esc(o.num)}">×</button></span>`).join('') : '<span class="nota-ed">Ninguna. Para una reserva grande, une mesas libres a esta.</span>'}</div>
+        ${plano ? '' : `<div class="unir"><select id="pUnir" aria-label="Mesa que se une" ${!candidatas.length ? 'disabled' : ''}>${candidatas.length ? candidatas.map(o => `<option value="${esc(o.id)}">Mesa ${esc(o.num)} · ${o.asientos} p. · ${ZONAS[o.zona] || ''}</option>`).join('') : '<option>No hay mesas libres</option>'}</select><button type="button" class="btn sm" data-act="unir" ${!candidatas.length ? 'disabled' : ''}>Unir</button></div>`}
+      </div>`;
+  const wa = !esMiembro && CON_RESERVA.has(m.estado) && m.tel ? waCliente(m) : '';
+  vm.innerHTML = `<div class="top"><h2>${esc(P.etiquetaGrupo(m, S.mesas))}</h2><span class="chip" data-st="${m.estado}">${ESTADOS[m.estado]}</span><button type="button" class="btn sm" data-act="cerrar">Cerrar</button></div>
+    <div class="row3">
+      <div class="f"><label for="pNum">Número</label><input id="pNum" value="${esc(m.num)}"></div>
+      <div class="f"><label for="pAs">Puestos</label><input id="pAs" type="number" min="1" max="16" inputmode="numeric" value="${m.asientos}"></div>
+      <div class="f"><label for="pZona">Zona</label><select id="pZona">${Object.entries(ZONAS).map(([k, v]) => `<option value="${k}" ${m.zona === k ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+    </div>
+    ${plano ? `<div class="row"><div class="f"><label for="pForma">Forma</label><select id="pForma">${Object.entries(FORMAS).map(([k, F]) => `<option value="${k}" ${m.forma === k ? 'selected' : ''}>${F.nombre}</option>`).join('')}</select></div><div class="f"><label>Girar</label><button type="button" class="btn" data-act="girar" ${m.forma === 'cuadrada' ? 'disabled' : ''}>Girar 90°</button></div></div>` : ''}
+    ${esMiembro ? unidasHtml : `
+    <div class="f"><label>Estado</label><div class="estado-btns">${btnsEstado}</div></div>
+    <div class="f"><label for="pNombre">Responsable de la reserva</label><input id="pNombre" value="${esc(m.nombre)}" autocomplete="off"></div>
+    <div class="row"><div class="f"><label for="pPers">Personas</label><input id="pPers" type="number" min="0" max="60" inputmode="numeric" value="${m.personas | 0}"></div><div class="f"><label for="pTel">Celular</label><input id="pTel" type="tel" inputmode="tel" value="${esc(m.tel)}"></div></div>
+    <div class="f"><label for="pNota">Nota</label><textarea id="pNota">${esc(m.nota)}</textarea></div>
+    ${unidasHtml}`}
+    <div class="acciones">
+      <button type="button" class="btn primary" data-act="guardar">Guardar</button>
+      ${wa ? `<a class="btn wa" href="${wa}" target="_blank" rel="noopener">Responder por WhatsApp</a>` : ''}
+      ${CON_RESERVA.has(m.estado) && !esMiembro ? `<button type="button" class="btn" data-act="liberar">Liberar${ms.length ? ' las mesas' : ' mesa'}</button>` : ''}
+      ${plano ? `<button type="button" class="btn danger" data-act="quitar">Quitar mesa</button>` : ''}
+    </div>
+    ${m.estado === 'solicitada' && !esMiembro ? `<p class="nota-ed">El cliente la pidió desde la web y debe escribir por WhatsApp. Al confirmarle, marca <b>Confirmada</b> y respóndele con el botón.</p>` : ''}
+    <div class="confirm" id="quitarConfirm" hidden><span>¿Quitar la mesa ${esc(m.num)} del plano?</span><button type="button" class="btn sm danger" data-act="quitarSi">Sí, quitar</button><button type="button" class="btn sm" data-act="quitarNo">No</button></div>
+    ${m.act ? `<p class="nota-ed">Último cambio: ${esc(P.fecha(m.act))}</p>` : ''}`;
+  if (selectKind === 'mesa' && !esMiembro) { const f = vm.querySelector(plano ? '#pNum' : '#pNombre'); if (f && !sheet) f.focus({ preventScroll: true }); }
+}
+
+// ---------- Panel: acciones ----------
+$('#vistaMesa').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const m = S.sel ? S.mesas.get(S.sel) : null; if (!m) return;
+  const act = b.dataset.act;
+  if (b.dataset.st && !act) { aplicar(m, { estado: b.dataset.st }); return; }
+  if (act === 'cerrar') { S.sel = null; render(); return; }
+  if (act === 'guardar') { aplicar(m, {}); toast('Guardado'); return; }
+  if (act === 'liberar') { for (const o of miembros(m)) separar(o); aplicar(m, { estado: 'libre', nombre: '', personas: 0, tel: '', nota: '' }); toast('Mesa ' + m.num + ' liberada'); return; }
+  if (act === 'unir') { const sel = $('#pUnir'); const otra = sel ? S.mesas.get(sel.value) : null; if (!otra) { toast('Elige una mesa libre'); return; } const p = raiz(m); unir(p, otra); toast('Mesa ' + otra.num + ' unida a la mesa ' + p.num); return; }
+  if (act === 'separar') { const o = S.mesas.get(b.dataset.id); if (o) { separar(o); toast('Mesa ' + o.num + ' separada y libre'); if (o.id === S.sel) render(); } return; }
+  if (act === 'irRaiz') { const p = raiz(m); if (p) { S.sel = p.id; render(); vista.centrar(p); } return; }
+  if (act === 'girar') { aplicar(m, { rot: ((m.rot || 0) + 90) % 360 }); return; }
+  if (act === 'quitar') { $('#quitarConfirm').hidden = false; return; }
+  if (act === 'quitarNo') { $('#quitarConfirm').hidden = true; return; }
+  if (act === 'quitarSi') { borrarMesa(m.id); toast('Mesa quitada'); return; }
+});
+function leerForm(m){
+  const g = id => { const el = document.getElementById(id); return el ? el.value : undefined; };
+  const n = { ...m };
+  if (g('pNum') !== undefined) { const v = g('pNum').trim(); if (v) n.num = v; }
+  if (g('pAs') !== undefined) n.asientos = Math.max(1, Math.min(16, +g('pAs') || m.asientos));
+  if (g('pZona') !== undefined) n.zona = g('pZona');
+  if (g('pForma') !== undefined && FORMAS[g('pForma')]) n.forma = g('pForma');
+  if (g('pNombre') !== undefined) n.nombre = g('pNombre').trim();
+  if (g('pPers') !== undefined) n.personas = Math.max(0, +g('pPers') || 0);
+  if (g('pTel') !== undefined) n.tel = g('pTel').trim();
+  if (g('pNota') !== undefined) n.nota = g('pNota').trim();
+  return n;
+}
+function aplicar(m, cambios){
+  const n = { ...leerForm(m), ...cambios };
+  if (n.estado === 'libre' && !('estado' in cambios) && (n.nombre || n.personas)) n.estado = 'reservada';
+  const cap = puestosGrupo(n);
+  if (CON_RESERVA.has(n.estado) && n.personas > cap) toast('Ojo: ' + n.personas + ' personas para ' + cap + ' puestos. Une otra mesa.');
+  const dup = [...S.mesas.values()].find(o => o.id !== n.id && String(o.num) === String(n.num));
+  if (dup) { toast('Ya hay otra mesa con el número ' + n.num); n.num = m.num; }
+  guardarMesa(n);
+  if (!n.grupo) propagar(n);
+}
+
+// ---------- Lista, filtros, búsqueda, modos ----------
+$('#lista').addEventListener('click', e => { const li = e.target.closest('li'); if (li) seleccionar(li.dataset.id); });
+$('#lista').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { const li = e.target.closest('li'); if (li) { e.preventDefault(); seleccionar(li.dataset.id); } } });
+$('#buscar').addEventListener('input', e => { S.q = e.target.value; renderLista(); });
+$('#filtros').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; S.filtro = b.dataset.f; $('#filtros').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); renderLista(); });
+function seleccionar(id){ selectKind = 'mesa'; S.sel = (S.sel === id && !esMovil()) ? null : id; render(); if (S.sel) vista.centrar(S.mesas.get(S.sel)); }
+document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => {
+  S.mode = b.dataset.mode; document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('#herrPlano').hidden = S.mode !== 'plano';
+  $('#hint').textContent = S.mode === 'plano' ? 'Arrastra una mesa para moverla · toca una mesa para editar su número o quitarla' : 'Arrastra una mesa para reubicarla · arrastra el piso para mover el plano · toca una mesa para ver su reserva';
+  S.sel = null; render();
+}));
+document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click', () => {
+  const forma = b.dataset.add; let n = 1; const nums = new Set([...S.mesas.values()].map(m => String(m.num))); while (nums.has(String(n))) n++;
+  const id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  const m = P.mk(id, n, forma, 'E', Math.round(vista.vb.x + vista.vb.w / 2), Math.round(vista.vb.y + vista.vb.h / 2));
+  guardarMesa(m); S.sel = id; render(); toast('Mesa ' + n + ' agregada en el centro de la vista');
+}));
+$('#btnReset').addEventListener('click', () => { $('#resetConfirm').hidden = false; });
+$('#resetNo').addEventListener('click', () => { $('#resetConfirm').hidden = true; });
+$('#resetSi').addEventListener('click', () => { $('#resetConfirm').hidden = true; resetPlano(); });
+window.addEventListener('resize', renderPanel);
+
+// ---------- Evento ----------
+$('#btnEvento').addEventListener('click', () => { const c = S.config; $('#evN').value = c.nombre; $('#evF').value = c.fecha; $('#evH').value = c.hora; $('#evA').value = c.aforo; $('#evS').value = c.sentados; $('#evAb').value = String(c.abierto) === 'no' ? 'no' : 'si'; $('#evHE').value = c.horas_espera; $('#dlgEvento').hidden = false; $('#evN').focus(); });
+$('#evCancelar').addEventListener('click', () => { $('#dlgEvento').hidden = true; });
+$('#evGuardar').addEventListener('click', () => { S.config = { ...S.config, nombre: $('#evN').value.trim() || CONFIG_DEF.nombre, fecha: $('#evF').value.trim(), hora: $('#evH').value.trim(), aforo: +$('#evA').value || 0, sentados: +$('#evS').value || 0, abierto: $('#evAb').value, horas_espera: +$('#evHE').value || 0 }; $('#dlgEvento').hidden = true; guardarConfig(); toast('Evento actualizado'); });
+$('#dlgEvento').addEventListener('click', e => { if (e.target.id === 'dlgEvento') $('#dlgEvento').hidden = true; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('#dlgEvento').hidden) { $('#dlgEvento').hidden = true; return; } if (S.sel) { S.sel = null; render(); } } });
+
+// ---------- CSV ----------
+$('#btnCsv').addEventListener('click', () => {
+  const filas = [['Mesa', 'Forma', 'Zona', 'Puestos', 'Estado', 'Responsable', 'Personas', 'Celular', 'Nota', 'Unida a la mesa', 'Último cambio']];
+  for (const m of ordenadas()) { const r = raiz(m); filas.push([m.num, FORMAS[m.forma].nombre, ZONAS[m.zona] || m.zona, m.asientos, ESTADOS[m.estado], m.nombre, m.personas, m.tel, m.nota, r && r.id !== m.id ? r.num : '', m.act]); }
+  const csv = '﻿' + filas.map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"').join(';')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'reservas-mesas-fiesta-salsa.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+});
+
+// ---------- Avisos ----------
+function aviso(t, err){ const a = $('#aviso'); a.textContent = t; a.hidden = !t; a.classList.toggle('err', !!err); }
+let toastT; function toast(t){ let el = $('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); } el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600); }
+})();
+</script>
+</body>
+</html>

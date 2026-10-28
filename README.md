@@ -7,6 +7,9 @@ Sitio estático (sin framework) con la landing y la carta 2026 del café. Se pub
 | `/` | `index.html` | Landing: qué encuentras, horario, ubicación, WhatsApp, reseñas. |
 | `/carta` | `carta/index.html` | La carta con fotos y precios. Se genera desde el artefacto de Claude. |
 | `/en/menu` | `en/menu/index.html` | La carta en inglés. Se genera desde `carta/index.html` con `scripts/construir-carta-en.py`. |
+| `/reservas` | `reservas/index.html` | Reserva de mesas de la fiesta de salsa para clientes: plano, mesa, confirmación por WhatsApp. |
+| `/reservas/admin` | `reservas/admin/index.html` | Tablero del café (con clave): reservas, mesas unidas, editar plano, CSV. Respaldo en Google Sheets + Apps Script; ver `scripts/reservas-apps-script/LEEME.md`. |
+| `/js/plano-salsa.js` | | Plano del piso PB y las 39 mesas del plan de contingencia; lo usan las dos páginas de reservas. |
 | `/img/` | `img/*.webp` | Fotos de la carta (148 archivos, portadas `h*.webp`, miniaturas `t*.webp`). |
 | `/js/config.js` | | ID de Google Analytics y datos públicos. **Único archivo que hay que editar para activar la analítica.** |
 | `/js/analytics.js` | | Eventos GA4 (ver lista abajo). |

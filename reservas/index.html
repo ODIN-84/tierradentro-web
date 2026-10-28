@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Reserva tu mesa · Fiesta de salsa · Tierradentro Café Express</title>
+<meta name="description" content="Elige tu mesa en el plano de la fiesta de salsa de Tierradentro Café Express, Mall Primavera Life, Armenia, y confírmala por WhatsApp.">
+<meta name="theme-color" content="#111113">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://tierradentroexpress.com/reservas">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Reserva tu mesa · Fiesta de salsa">
+<meta property="og:description" content="Elige tu mesa en el plano y confírmala por WhatsApp. Último viernes de cada mes en Tierradentro Café Express.">
+<meta property="og:image" content="https://tierradentroexpress.com/img/salsa-2026-10.webp">
+<meta property="og:locale" content="es_CO">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@1,800&family=Barlow+Semi+Condensed:wght@400;600;700&display=swap">
+<style>
+/* Tierradentro · lienzo carbón, mismo sistema de la landing. El plano usa los colores oscuros del tablero del café. */
+:root{
+  color-scheme:dark;
+  --carbon:#111113; --surface:#19191b; --line:#2c2c2e;
+  --crema:#feffdb; --muted:#a8a49b; --arena:#d2b48c; --sol:#ffce5c; --bosque:#344e2a; --brote:#87ba77; --naranja:#fe502c; --vino:#740001;
+  --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;
+  --f-sub:"Archivo","Arial",system-ui,sans-serif;
+  --f-text:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",system-ui,sans-serif;
+  /* plano (tema Carbón) */
+  --p-piso:#26262a; --p-piso-junta:#2e2e33; --p-muro:#3a3a3f; --p-muro-borde:#55555b; --p-texto:#b9b6ad; --p-exterior:#1f2a1f;
+  --p-madera:#7a5a37; --p-madera-veta:#654827; --p-planta:#3f6b3a; --p-planta2:#2e5129; --p-barra:#5f6a24; --p-corredor:#c84a3a;
+  --p-tarima:#3c3c42; --p-tecnica:#6b5a24; --p-silla:#5c6058; --p-silla-borde:#8b9086;
+  --surface-raised:#1d1d20; --ink:#feffdb; --ink-muted:#a8a49b; --madera:#af753e; --granate:#591313;
+  --st-libre:#feffdb; --st-libre-borde:#d2b48c; --st-res:#3a3a3f; --st-res-borde:#55555b;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--carbon)}
+body{margin:0;background:var(--carbon);color:var(--crema);font-family:var(--f-text);font-size:17px;line-height:1.4;padding-inline:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--sol);outline-offset:2px}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.top{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding-block:22px 16px}
+.top img{width:64px;height:64px}
+.eyebrow{font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--arena);margin:0 0 6px}
+.top h1{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(24px,6vw,34px);line-height:.98;margin:0;text-wrap:balance}
+.fecha{margin:8px 0 0;font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:16px;color:var(--sol)}
+.pasos{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:6px;color:var(--muted);font-size:16px}
+.pasos li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
+.pasos b{font-family:var(--f-display);font-weight:400;color:var(--sol);font-size:18px;line-height:1.2}
+.barra{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+.cupos{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.cupos b{font-family:var(--f-display);font-weight:400;font-size:18px;color:var(--crema);margin-right:4px}
+.legend{display:flex;gap:12px;font-size:13px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid;vertical-align:-2px;margin-right:4px}
+.zoom{display:inline-flex;gap:4px;margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:12px 18px;border:1px solid var(--arena);color:var(--arena);background:none}
+.btn.primary{background:var(--crema);color:var(--carbon);border-color:var(--crema)}
+.btn.sol{border-color:var(--sol);color:var(--sol)}
+.btn.wa{background:var(--sol);color:var(--carbon);border-color:var(--sol);font-size:16px;padding:16px 22px;width:100%}
+.btn.sm{padding:7px 12px;font-size:13px;letter-spacing:.08em}
+.btn:disabled{opacity:.5;cursor:default}
+.plano-wrap{position:relative;background:var(--p-piso);border:1px solid var(--line);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;height:min(62vh,520px)}
+.plano-wrap svg{display:block;width:100%;height:100%;cursor:grab}
+.plano-wrap.dragging svg{cursor:grabbing}
+.hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--muted);background:rgba(17,17,19,.85);border:1px solid var(--line);padding:4px 8px;pointer-events:none}
+.aviso{margin:14px 0 0;padding:14px 16px;border:1px solid var(--sol);background:var(--surface);font-size:16px}
+.aviso .btn{margin-top:12px}
+.nota{margin:14px 0 0;font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
+.nota::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--sol)}
+.foot{margin-top:34px;padding-block:22px 36px;border-top:1px solid var(--line);color:var(--muted);font-size:15px;display:grid;gap:8px}
+.foot a{color:var(--crema);font-weight:600}
+
+/* Hoja de solicitud */
+.velo{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.hoja{background:var(--carbon);border:1px solid var(--line);border-bottom:0;width:min(100%,560px);max-height:88vh;overflow:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
+@media (min-width:700px){.velo{align-items:center;padding:16px}.hoja{border-bottom:1px solid var(--line);max-height:90vh}}
+.hoja h2{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:22px;margin:0;line-height:1}
+.hoja .sub{margin:0;color:var(--muted)}
+.hoja .cab{display:flex;align-items:flex-start;gap:10px}
+.hoja .cab div{flex:1}
+.f{display:grid;gap:4px}
+.f label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--arena);font-weight:600}
+.f input{padding:12px;border:1px solid var(--line);background:var(--surface);color:var(--crema);width:100%;font-size:17px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{color:var(--sol);font-weight:600;margin:0}
+.codigo{font-family:var(--f-display);font-size:34px;color:var(--sol);margin:0;letter-spacing:.06em}
+.ok p{margin:0}
+.ok .det{color:var(--muted)}
+
+/* svg */
+svg text{font-family:var(--f-text);pointer-events:none}
+.lbl{fill:var(--p-texto);font-size:15px;font-weight:700;letter-spacing:.08em;text-anchor:middle;text-transform:uppercase}
+.lbl.sm{font-size:11px;font-weight:600;letter-spacing:.06em}
+.mesa{cursor:pointer}
+.mesa .top{stroke-width:2.5}
+.mesa[data-st="libre"] .top{fill:var(--st-libre);stroke:var(--st-libre-borde)}
+.mesa[data-st="reservada"] .top{fill:var(--st-res);stroke:var(--st-res-borde)}
+.mesa[data-st="reservada"]{cursor:default}
+.mesa .num{font-family:var(--f-display);font-size:19px;text-anchor:middle;fill:#111113}
+.mesa[data-st="reservada"] .num{fill:var(--muted)}
+.mesa .pax{font-size:10px;font-weight:600;text-anchor:middle;fill:var(--muted)}
+.mesa[data-st="libre"] .pax{fill:var(--crema)}
+.mesa[data-st="libre"] .in.pax{fill:#5a5a5a}
+.mesa .num.in{font-size:16px}
+.mesa .in.pax{font-size:9.5px;font-weight:700}
+.mesa .silla{fill:var(--p-silla);stroke:var(--p-silla-borde);stroke-width:1}
+.mesa.sel .top{stroke:var(--sol);stroke-width:4}
+.enlace{display:none}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<script src="/js/config.js"></script>
+<script src="/js/analytics.js" defer></script>
+<script src="/js/plano-salsa.js"></script>
+</head>
+<body data-page="reservas">
+<div class="wrap">
+  <header class="top">
+    <a href="/" aria-label="Inicio"><img src="/img/logo.webp" alt="Tierradentro Café Express" width="64" height="64"></a>
+    <div>
+      <p class="eyebrow">Fiesta de salsa · Mall Primavera Life, Armenia</p>
+      <h1>Reserva tu mesa</h1>
+      <p class="fecha"><span id="evFecha">Último viernes de cada mes</span><span id="evHora"></span></p>
+    </div>
+  </header>
+</div>
+<main class="wrap">
+  <ol class="pasos" id="pasos">
+    <li><b>1</b><span>Toca una mesa en blanco en el plano.</span></li>
+    <li><b>2</b><span>Escribe tu nombre, cuántos vienen y tu WhatsApp.</span></li>
+    <li><b>3</b><span>Envíanos la confirmación por WhatsApp. La mesa queda apartada cuando te respondamos.</span></li>
+  </ol>
+  <div class="barra" id="barra" hidden>
+    <span class="cupos"><b id="nLibres">0</b> mesas libres · <b id="nPuestos">0</b> puestos</span>
+    <span class="legend"><span><i style="background:var(--st-libre);border-color:var(--st-libre-borde)"></i>Libre</span><span><i style="background:var(--st-res);border-color:var(--st-res-borde)"></i>Reservada</span></span>
+    <span class="zoom"><button type="button" class="btn sm" id="zIn" aria-label="Acercar">+</button><button type="button" class="btn sm" id="zOut" aria-label="Alejar">−</button><button type="button" class="btn sm" id="zFit">Todo</button></span>
+  </div>
+  <div class="plano-wrap" id="planoWrap" hidden>
+    <svg id="plano" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano de la fiesta con las mesas libres y reservadas"></svg>
+    <div class="hint">Arrastra para mover el plano · pellizca para acercar · toca una mesa libre</div>
+  </div>
+  <div class="aviso" id="aviso" hidden></div>
+  <p class="nota" id="notaPie" hidden>Entrada libre. Las mesas son para grupos de hasta 4, 6 u 8 personas según la mesa; si vienen más, pide una mesa y en la confirmación te acomodamos otra al lado.</p>
+</main>
+<footer class="wrap foot">
+  <p>Tierradentro Café Express · Mall Primavera Life, piso PB, local 110 · Armenia, Quindío.</p>
+  <p>WhatsApp <a id="waPie" href="https://wa.me/573146551487" target="_blank" rel="noopener" data-track="whatsapp">314 655 1487</a> · <a href="/">Volver al inicio</a> · <a href="/carta">Ver la carta</a></p>
+</footer>
+
+<div class="velo" id="velo" hidden>
+  <div class="hoja" id="hoja" role="dialog" aria-modal="true" aria-labelledby="hojaTitulo"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+const P = window.TDE_PLANO, cfg = window.TDE_CONFIG || {};
+const $ = s => document.querySelector(s);
+const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+const API = (cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : (esLocal ? '/api' : '');
+const WA = cfg.WHATSAPP || '573146551487';
+const S = { mesas: new Map(), config: {}, sel: null, enviando: false };
+const svg = $('#plano'), wrap = $('#planoWrap');
+const gMesas = P.montar(svg);
+const vista = P.crearVista(svg, wrap, { onTap: id => { if (id) abrir(id); }, posicion: id => S.mesas.get(id) });
+$('#zIn').addEventListener('click', vista.zoomIn); $('#zOut').addEventListener('click', vista.zoomOut); $('#zFit').addEventListener('click', vista.fit);
+function track(n, p){ if (window.tdeTrack) window.tdeTrack(n, p || {}); }
+function waLink(texto){ return 'https://wa.me/' + WA + (texto ? '?text=' + encodeURIComponent(texto) : ''); }
+
+function aviso(html){ const a = $('#aviso'); a.innerHTML = html; a.hidden = !html; }
+function render(){
+  P.renderMesas(gMesas, S.mesas, { cliente: true, sel: S.sel });
+  let libres = 0, puestos = 0;
+  for (const m of S.mesas.values()) if (m.estado === 'libre') { libres++; puestos += m.asientos | 0; }
+  $('#nLibres').textContent = libres; $('#nPuestos').textContent = puestos;
+  const c = S.config;
+  if (c.fecha) { $('#evFecha').textContent = c.fecha; $('#evHora').textContent = c.hora ? ' · ' + c.hora : ''; }
+}
+async function cargar(){
+  if (!API) {
+    aviso('Las reservas en línea todavía no están activas. Escríbenos por WhatsApp y te apartamos la mesa.<br><a class="btn wa" href="' + waLink('Hola, quiero reservar una mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Reservar por WhatsApp</a>');
+    return;
+  }
+  try {
+    const r = await fetch(API + '?accion=estado', { cache: 'no-store' });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'respuesta');
+    S.config = d.config || {};
+    S.mesas = new Map((d.mesas || []).map(m => { const n = P.normalizar(m); return [n.id, n]; }));
+    $('#barra').hidden = false; wrap.hidden = false; $('#notaPie').hidden = false;
+    if (String(S.config.abierto).toLowerCase() !== 'si') {
+      aviso('Las reservas para esta fiesta están cerradas. Si quieres, escríbenos por WhatsApp.<br><a class="btn wa" href="' + waLink('Hola, quiero saber si hay mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Escribir por WhatsApp</a>');
+    } else aviso('');
+    render(); vista.fit(); requestAnimationFrame(vista.fit);
+  } catch (e) {
+    aviso('No pudimos cargar el plano en este momento. Escríbenos por WhatsApp y te apartamos la mesa.<br><a class="btn wa" href="' + waLink('Hola, quiero reservar una mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Reservar por WhatsApp</a>');
+  }
+}
+cargar(); window.addEventListener('load', () => vista.fit());
+setInterval(() => { if (document.visibilityState === 'visible' && $('#velo').hidden) cargar(); }, 30000);
+
+// ---------- Hoja de solicitud ----------
+function abrir(id){
+  const m = S.mesas.get(id); if (!m) return;
+  if (String(S.config.abierto).toLowerCase() !== 'si') return;
+  S.sel = id; render(); vista.centrar(m);
+  const hoja = $('#hoja');
+  if (m.estado !== 'libre') {
+    hoja.innerHTML = `<div class="cab"><div><h2 id="hojaTitulo">Mesa ${P.esc(m.num)}</h2><p class="sub">Ya está reservada. Elige una mesa en blanco.</p></div><button type="button" class="btn sm" data-act="cerrar">Cerrar</button></div>`;
+  } else {
+    hoja.innerHTML = `<div class="cab"><div><h2 id="hojaTitulo">Mesa ${P.esc(m.num)}</h2><p class="sub">${m.asientos} puestos · ${P.esc(P.ZONAS[m.zona] || '')}</p></div><button type="button" class="btn sm" data-act="cerrar">Cerrar</button></div>
+      <form id="form" novalidate>
+        <div class="f"><label for="cNombre">Tu nombre</label><input id="cNombre" autocomplete="name" required maxlength="60" placeholder="Nombre y apellido"></div>
+        <div class="row" style="margin-top:10px">
+          <div class="f"><label for="cPers">Cuántos vienen</label><input id="cPers" type="number" min="1" max="${m.asientos}" inputmode="numeric" value="${Math.min(2, m.asientos)}" required></div>
+          <div class="f"><label for="cTel">Tu WhatsApp</label><input id="cTel" type="tel" inputmode="tel" autocomplete="tel" required placeholder="314 000 0000"></div>
+        </div>
+        <p class="err" id="err" hidden></p>
+        <p class="sub" style="margin-top:10px">Máximo ${m.asientos} personas en esta mesa. Entrada libre; la mesa queda apartada cuando te confirmemos por WhatsApp.</p>
+        <button type="submit" class="btn wa" style="margin-top:12px" id="btnEnviar">Solicitar la mesa ${P.esc(m.num)}</button>
+      </form>`;
+  }
+  $('#velo').hidden = false;
+  const f = hoja.querySelector('#cNombre'); if (f && window.matchMedia('(min-width:700px)').matches) f.focus();
+}
+function cerrar(){ $('#velo').hidden = true; S.sel = null; render(); }
+$('#velo').addEventListener('click', e => { if (e.target.id === 'velo' || e.target.closest('[data-act="cerrar"]')) cerrar(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#velo').hidden) cerrar(); });
+$('#hoja').addEventListener('submit', async e => {
+  e.preventDefault(); if (S.enviando) return;
+  const m = S.mesas.get(S.sel); if (!m) return;
+  const nombre = $('#cNombre').value.trim(), personas = +$('#cPers').value || 0, tel = $('#cTel').value.replace(/\D/g, '');
+  const err = $('#err');
+  const falla = t => { err.textContent = t; err.hidden = false; };
+  if (nombre.length < 2) return falla('Escribe tu nombre.');
+  if (personas < 1) return falla('Dinos cuántas personas vienen.');
+  if (personas > m.asientos) return falla('Esta mesa es para máximo ' + m.asientos + ' personas. Elige otra mesa o pide esta y te acomodamos otra al lado.');
+  if (tel.length < 10) return falla('Escribe tu número de WhatsApp con 10 dígitos.');
+  err.hidden = true; S.enviando = true; const b = $('#btnEnviar'); b.disabled = true; b.textContent = 'Enviando…';
+  try {
+    const r = await fetch(API, { method: 'POST', body: JSON.stringify({ accion: 'solicitar', mesa: m.id, nombre, personas, tel }) });
+    const d = await r.json();
+    if (!d.ok) {
+      if (d.error === 'ocupada') { falla('Alguien acaba de pedir esta mesa. Elige otra.'); await cargar(); }
+      else if (d.error === 'capacidad') falla('Esta mesa es para máximo ' + d.asientos + ' personas.');
+      else if (d.error === 'cerrado') { falla('Las reservas para esta fiesta están cerradas.'); await cargar(); }
+      else if (d.error === 'datos') falla('Revisa tu nombre, las personas y el número de WhatsApp.');
+      else falla('No pudimos registrar la solicitud. Intenta de nuevo o escríbenos por WhatsApp.');
+      return;
+    }
+    track('reserva_solicitada', { cta: 'mesa_' + m.num, personas });
+    const c = d.config || S.config;
+    const msg = `Hola, Tierradentro. Solicité la mesa ${d.mesa.num} para la ${c.nombre || 'fiesta de salsa'} del ${c.fecha || ''}, a nombre de ${nombre}, ${personas} ${personas === 1 ? 'persona' : 'personas'}. Código ${d.codigo}. ¿Me la confirman?`;
+    $('#hoja').innerHTML = `<div class="ok"><div class="cab"><div><h2 id="hojaTitulo">Mesa ${P.esc(d.mesa.num)} solicitada</h2><p class="sub">Falta un paso: confírmala por WhatsApp.</p></div><button type="button" class="btn sm" data-act="cerrar">Cerrar</button></div>
+      <p class="codigo">${P.esc(d.codigo)}</p>
+      <p class="det">Guarda este código. Toca el botón: se abre WhatsApp con el mensaje listo, solo envíalo. Te respondemos con la confirmación. Si no la confirmas en ${c.horas_espera || 48} horas, la mesa vuelve a quedar libre.</p>
+      <a class="btn wa" href="${waLink(msg)}" target="_blank" rel="noopener" data-track="salsa_whatsapp_confirmar">Confirmar por WhatsApp</a>
+      <p class="det">Nombre: <b>${P.esc(nombre)}</b> · ${personas} ${personas === 1 ? 'persona' : 'personas'} · WhatsApp ${P.esc(tel)}</p></div>`;
+    await cargar();
+  } catch (x) {
+    falla('Sin conexión. Intenta de nuevo o escríbenos por WhatsApp al 314 655 1487.');
+  } finally { S.enviando = false; const b2 = $('#btnEnviar'); if (b2) { b2.disabled = false; b2.textContent = 'Solicitar la mesa ' + m.num; } }
+});
+$('#waPie').href = 'https://wa.me/' + WA;
+})();
+</script>
+</body>
+</html>

@@ -6,6 +6,11 @@ window.TDE_CONFIG = {
   WHATSAPP: "573146551487",
   SITE: "https://tierradentroexpress.com",
 
+  // Reservas de mesas de la fiesta de salsa (/reservas y /reservas/admin).
+  // URL del Apps Script publicado como aplicación web (termina en /exec); ver scripts/reservas-apps-script/LEEME.md.
+  // Mientras sea "PENDIENTE", /reservas solo muestra el botón de WhatsApp y /reservas/admin trabaja en modo local (sin respaldo).
+  RESERVAS_API: "PENDIENTE",
+
   // Línea bajo "Dónde estamos" para encontrar el local dentro del mall. Vacía = no se muestra.
   COMO_LLEGAR_MALL: "Estamos en el piso PB del edificio.",
 
