@@ -58,8 +58,9 @@ implementaciones → editar (lápiz) → Versión: Nueva versión → Implementa
 
 - La página de clientes solo recibe el plano sin nombres ni celulares (`libre` / `reservada`). Los datos personales solo los ve
   quien tenga la clave de administración.
-- La clave queda guardada en el celular o computador donde se entre al tablero; para cambiarla, en el editor de Apps Script ir a
-  **Configuración del proyecto → Propiedades del script → `ADMIN_KEY`**, poner otra, y actualizar la fila `clave_admin` de la hoja.
+- La clave queda guardada en el celular o computador donde se entre al tablero. **Para cambiarla:** escribir la nueva en la celda
+  B10 (fila `clave_admin`) de la pestaña `config` de la hoja y, en el editor de Apps Script, ejecutar `setup` otra vez. Una clave
+  corta (cuatro dígitos) se adivina probando; mejor una palabra con número.
 - Un Apps Script gratuito atiende de sobra el tráfico de una fiesta (límite de Google: decenas de miles de llamadas por día).
 - Para probar en el computador sin tocar la hoja real: `python scripts/reservas-mock-server.py` y abrir http://localhost:8092/reservas
   (clave del tablero de prueba: `PRUEBA`).
