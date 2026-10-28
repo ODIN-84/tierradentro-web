@@ -122,10 +122,13 @@
     if (nom && esp.nombre) { nom.textContent = esp.nombre; nom.hidden = false; }
     var det = document.getElementById("noches-detalle");
     if (det && esp.detalle) { det.textContent = esp.detalle; det.hidden = false; }
+    // "Aparta tu mesa" lleva al plano de reservas (/reservas). Solo si el respaldo de reservas no está configurado, va a WhatsApp.
     var wa = document.getElementById("noches-wa");
-    if (wa && cfg.WHATSAPP) {
+    var sinReservas = !cfg.RESERVAS_API || cfg.RESERVAS_API === "PENDIENTE";
+    if (wa && sinReservas && cfg.WHATSAPP) {
       wa.href = "https://wa.me/" + cfg.WHATSAPP + "?text=" + encodeURIComponent(
         "Hola, quiero apartar mesa para la fiesta de salsa del " + DIAS[fiesta.getUTCDay()] + " " + fiesta.getUTCDate() + " de " + MESES[fiesta.getUTCMonth()] + ".");
+      wa.target = "_blank"; wa.rel = "noopener"; wa.setAttribute("data-track", "salsa_whatsapp");
     }
   }
 
