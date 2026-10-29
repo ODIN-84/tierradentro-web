@@ -4,7 +4,8 @@ Sirve el sitio estático y simula el Apps Script (scripts/reservas-apps-script/C
 lógica y las mismas respuestas, en http://localhost:8092/api . Solo para probar en el computador; en producción el
 respaldo es el Apps Script de la cuenta del café.
 
-Uso:  python scripts/reservas-mock-server.py            (clave de administración: PRUEBA)
+Uso:  python scripts/reservas-mock-server.py [puerto] [demora_segundos]     (clave de administración: PRUEBA)
+      La demora (por ejemplo 2) imita lo que tarda el Apps Script real en responder, para probar la carga.
 Las páginas usan este servidor cuando se abren desde localhost y RESERVAS_API es "PENDIENTE" (ver js/config.js).
 """
 import json, random, string, sys, threading, time
@@ -16,6 +17,7 @@ from urllib.parse import urlparse, parse_qs
 RAIZ = Path(__file__).resolve().parents[1]
 SEMILLA = json.loads((RAIZ / "scripts" / "reservas-apps-script" / "semilla.json").read_text(encoding="utf-8"))
 CLAVE = "PRUEBA"
+DEMORA = float(sys.argv[2]) if len(sys.argv) > 2 else 0.0
 CONFIG = {"nombre": "Fiesta de salsa", "fecha": "Viernes 30 de octubre de 2026", "hora": "9:00 p. m. a 3:00 a. m.",
           "aforo": 250, "sentados": 204, "abierto": "si", "horas_espera": 48, "whatsapp": "573146551487"}
 MESAS = [dict(m) for m in SEMILLA]
@@ -152,6 +154,8 @@ class H(SimpleHTTPRequestHandler):
         if u.path == "/api":
             q = parse_qs(u.query)
             if q.get("accion", [""])[0] == "estado":
+                if DEMORA:
+                    time.sleep(DEMORA)
                 with LOCK:
                     pub = [{"id": m["id"], "num": m["num"], "forma": m["forma"], "zona": m["zona"], "x": m["x"], "y": m["y"], "rot": m["rot"],
                             "asientos": m["asientos"], "grupo": m["grupo"], "estado": "libre" if m["estado"] == "libre" else "reservada"} for m in MESAS]

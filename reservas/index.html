@@ -66,6 +66,15 @@ button{cursor:pointer}
 .plano-wrap svg{display:block;width:100%;height:100%;cursor:grab}
 .plano-wrap.dragging svg{cursor:grabbing}
 .hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--muted);background:rgba(17,17,19,.85);border:1px solid var(--line);padding:4px 8px;pointer-events:none}
+/* Esqueleto de carga: el plano y las mesas aparecen de inmediato en gris; el aviso con punto late hasta que llega la hoja */
+.cargando{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--crema);background:rgba(17,17,19,.88);border:1px solid var(--line);padding:7px 12px;pointer-events:none;white-space:nowrap}
+.cargando i{width:9px;height:9px;border-radius:50%;background:var(--sol)}
+@media (prefers-reduced-motion:no-preference){.cargando i{animation:late 1s ease-in-out infinite}}
+@keyframes late{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+#mesas.esqueleto .mesa{cursor:progress}
+#mesas.esqueleto .mesa .top{fill:var(--p-muro);stroke:var(--p-muro-borde)}
+#mesas.esqueleto .mesa text{opacity:.35}
+.cupos b.esq{color:var(--muted)}
 .aviso{margin:14px 0 0;padding:14px 16px;border:1px solid var(--sol);background:var(--surface);font-size:16px}
 .aviso .btn{margin-top:12px}
 .nota{margin:14px 0 0;font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
@@ -111,9 +120,21 @@ svg text{font-family:var(--f-text);pointer-events:none}
 .enlace{display:none}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 </style>
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
 <script src="/js/config.js"></script>
+<script>
+// La consulta de las mesas al Apps Script tarda unos 2 s: se lanza desde ya, en paralelo con la descarga del resto de la página.
+(function(){
+  var c = window.TDE_CONFIG || {};
+  var local = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  var api = local ? '/api' : ((c.RESERVAS_API && c.RESERVAS_API !== 'PENDIENTE') ? c.RESERVAS_API : '');
+  window.__tdeApi = api;
+  window.__tdeEstado = api ? fetch(api + '?accion=estado', { cache: 'no-store' }).then(function(r){ return r.json(); }) : null;
+})();
+</script>
+<script src="/js/plano-salsa.js" defer></script>
 <script src="/js/analytics.js" defer></script>
-<script src="/js/plano-salsa.js"></script>
 </head>
 <body data-page="reservas">
 <div class="wrap">
@@ -139,6 +160,7 @@ svg text{font-family:var(--f-text);pointer-events:none}
   </div>
   <div class="plano-wrap" id="planoWrap" hidden>
     <svg id="plano" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plano de la fiesta con las mesas libres y reservadas"></svg>
+    <div class="cargando" id="cargando" role="status"><i></i><span>Cargando las mesas…</span></div>
     <div class="hint">Arrastra para mover el plano · pellizca para acercar · toca una mesa libre</div>
   </div>
   <div class="aviso" id="aviso" hidden></div>
@@ -154,15 +176,16 @@ svg text{font-family:var(--f-text);pointer-events:none}
 </div>
 
 <script>
-(function(){
+// Arranca cuando plano-salsa.js (diferido) ya está cargado
+function tdeInicio(){
 'use strict';
 const P = window.TDE_PLANO, cfg = window.TDE_CONFIG || {};
 const $ = s => document.querySelector(s);
-const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-// En localhost siempre se usa el simulador (scripts/reservas-mock-server.py), nunca la hoja real
-const API = esLocal ? '/api' : ((cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : '');
+// En localhost siempre se usa el simulador (scripts/reservas-mock-server.py), nunca la hoja real (ver el script de la cabecera)
+const API = window.__tdeApi || '';
 const WA = cfg.WHATSAPP || '573146551487';
-const S = { mesas: new Map(), config: {}, sel: null, enviando: false };
+const CACHE = 'tde-reservas-publico';
+const S = { mesas: new Map(), config: {}, sel: null, enviando: false, listo: false };
 const svg = $('#plano'), wrap = $('#planoWrap');
 const gMesas = P.montar(svg);
 const vista = P.crearVista(svg, wrap, { onTap: id => { if (id) abrir(id); }, posicion: id => S.mesas.get(id) });
@@ -176,35 +199,54 @@ function render(){
   let libres = 0, puestos = 0;
   for (const m of S.mesas.values()) if (m.estado === 'libre') { libres++; puestos += m.asientos | 0; }
   $('#nLibres').textContent = libres; $('#nPuestos').textContent = puestos;
+  $('#nLibres').classList.toggle('esq', !S.listo); $('#nPuestos').classList.toggle('esq', !S.listo);
   const c = S.config;
   if (c.fecha) { $('#evFecha').textContent = c.fecha; $('#evHora').textContent = c.hora ? ' · ' + c.hora : ''; }
 }
-async function cargar(){
+function mostrarPlano(){ if (!wrap.hidden) return; $('#barra').hidden = false; wrap.hidden = false; $('#notaPie').hidden = false; vista.fit(); requestAnimationFrame(vista.fit); }
+function aplicar(d){
+  S.config = d.config || {};
+  S.mesas = new Map((d.mesas || []).map(m => { const n = P.normalizar(m); return [n.id, n]; }));
+}
+// 1) Mientras llega la hoja: la última respuesta guardada en este navegador (si es de hoy) o, si no hay, las 39 mesas del plan en gris
+function esqueleto(){
+  let cache = null;
+  try { cache = JSON.parse(localStorage.getItem(CACHE) || 'null'); } catch (e) {}
+  if (cache && cache.d && Date.now() - (cache.t || 0) < 12 * 3600 * 1000) { aplicar(cache.d); }
+  else { S.mesas = new Map(P.DEFAULTS.map(m => [m.id, { ...m }])); gMesas.classList.add('esqueleto'); }
+  mostrarPlano(); render();
+}
+async function cargar(primera){
   if (!API) {
+    wrap.hidden = true; $('#barra').hidden = true;
     aviso('Las reservas en línea todavía no están activas. Escríbenos por WhatsApp y te apartamos la mesa.<br><a class="btn wa" href="' + waLink('Hola, quiero reservar una mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Reservar por WhatsApp</a>');
     return;
   }
   try {
-    const r = await fetch(API + '?accion=estado', { cache: 'no-store' });
-    const d = await r.json();
+    // La primera consulta se lanzó desde la cabecera de la página, antes de descargar scripts y fuentes
+    const d = (primera && window.__tdeEstado) ? await window.__tdeEstado : await fetch(API + '?accion=estado', { cache: 'no-store' }).then(r => r.json());
     if (!d.ok) throw new Error(d.error || 'respuesta');
-    S.config = d.config || {};
-    S.mesas = new Map((d.mesas || []).map(m => { const n = P.normalizar(m); return [n.id, n]; }));
-    $('#barra').hidden = false; wrap.hidden = false; $('#notaPie').hidden = false;
+    aplicar(d); S.listo = true; gMesas.classList.remove('esqueleto'); $('#cargando').hidden = true;
+    try { localStorage.setItem(CACHE, JSON.stringify({ t: Date.now(), d })); } catch (e) {}
+    mostrarPlano();
     if (String(S.config.abierto).toLowerCase() !== 'si') {
       aviso('Las reservas para esta fiesta están cerradas. Si quieres, escríbenos por WhatsApp.<br><a class="btn wa" href="' + waLink('Hola, quiero saber si hay mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Escribir por WhatsApp</a>');
     } else aviso('');
-    render(); vista.fit(); requestAnimationFrame(vista.fit);
+    render();
   } catch (e) {
+    $('#cargando').hidden = true;
+    if (!S.listo) { wrap.hidden = true; $('#barra').hidden = true; }
     aviso('No pudimos cargar el plano en este momento. Escríbenos por WhatsApp y te apartamos la mesa.<br><a class="btn wa" href="' + waLink('Hola, quiero reservar una mesa para la fiesta de salsa.') + '" target="_blank" rel="noopener" data-track="salsa_whatsapp">Reservar por WhatsApp</a>');
   }
 }
-cargar(); window.addEventListener('load', () => vista.fit());
+if (API) esqueleto();
+cargar(true); window.addEventListener('load', () => vista.fit());
 setInterval(() => { if (document.visibilityState === 'visible' && $('#velo').hidden) cargar(); }, 30000);
 
 // ---------- Hoja de solicitud ----------
 function abrir(id){
   const m = S.mesas.get(id); if (!m) return;
+  if (!S.listo && !S.config.fecha) return;   // todavía es el esqueleto gris: no hay datos reales
   if (String(S.config.abierto).toLowerCase() !== 'si') return;
   S.sel = id; render(); vista.centrar(m);
   const hoja = $('#hoja');
@@ -265,7 +307,8 @@ $('#hoja').addEventListener('submit', async e => {
   } finally { S.enviando = false; const b2 = $('#btnEnviar'); if (b2) { b2.disabled = false; b2.textContent = 'Solicitar la mesa ' + m.num; } }
 });
 $('#waPie').href = 'https://wa.me/' + WA;
-})();
+}
+if (window.TDE_PLANO) tdeInicio(); else document.addEventListener('DOMContentLoaded', tdeInicio);
 </script>
 </body>
 </html>
