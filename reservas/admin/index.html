@@ -288,7 +288,8 @@ const P = window.TDE_PLANO, cfg = window.TDE_CONFIG || {};
 const { FORMAS, ZONAS, ESTADOS, CON_RESERVA, DEFAULTS, CONFIG_DEF, esc } = P;
 const $ = s => document.querySelector(s);
 const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-const API = (cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : (esLocal ? '/api' : '');
+// En localhost siempre se usa el simulador (scripts/reservas-mock-server.py), nunca la hoja real
+const API = esLocal ? '/api' : ((cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : '');
 const WA_CAFE = cfg.WHATSAPP || '573146551487';
 const LS_KEY = 'tde-reservas-admin', LS_CLAVE = 'tde-reservas-clave';
 const S = { mesas: new Map(), config: { ...CONFIG_DEF }, mode: 'reservas', sel: null, filtro: 'todas', q: '', clave: '', local: !API, ocupado: 0 };
@@ -373,8 +374,9 @@ if (!API) { S.local = true; if (loadLocal()) render(); aviso('Sin respaldo confi
 else {
   try { S.clave = localStorage.getItem(LS_CLAVE) || ''; } catch (e) {}
   if (S.clave) cargar().then(() => { if (!$('#dlgClave').hidden) return; }); else pedirClave(false);
-  setInterval(() => { if (document.visibilityState === 'visible' && S.clave && !S.ocupado) cargar(); }, 20000);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.clave) cargar(); });
+  // Relectura periódica de la hoja; se salta mientras alguien escribe en el panel de una mesa
+  setInterval(() => { if (document.visibilityState === 'visible' && S.clave && !S.ocupado && !editando()) cargar(); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.clave && !editando()) cargar(); });
 }
 $('#btnRecargar').addEventListener('click', () => cargar());
 
@@ -412,10 +414,14 @@ function waCliente(m){
   const msg = `Hola ${m.nombre || ''}. Te confirmamos la ${P.etiquetaGrupo(m, S.mesas).toLowerCase()} para la ${S.config.nombre || 'fiesta de salsa'} del ${S.config.fecha || ''}, ${m.personas || ''} personas. ¡Nos vemos en Tierradentro Café Express, Mall Primavera Life!`;
   return 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
 }
+// ¿Hay alguien escribiendo en el panel de la mesa? Mientras sí, el panel no se vuelve a dibujar (si no, se borra lo escrito).
+function editando(){ const a = document.activeElement; return !!(a && a.closest && a.closest('#vistaMesa') && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); }
 function renderPanel(){
   const m = S.sel ? S.mesas.get(S.sel) : null;
   const vm = $('#vistaMesa'), vl = $('#vistaLista'); const sheet = esMovil();
-  if (!m) { vm.hidden = true; vl.hidden = false; aside.classList.remove('sheet'); return; }
+  if (!m) { vm.hidden = true; vl.hidden = false; aside.classList.remove('sheet'); S.panelId = null; return; }
+  if (S.panelId === m.id && editando()) { aside.classList.toggle('sheet', sheet); return; }   // se conserva lo que se está escribiendo
+  S.panelId = m.id;
   vl.hidden = true; vm.hidden = false; aside.classList.toggle('sheet', sheet);
   const plano = S.mode === 'plano';
   const ms = miembros(m), r = raiz(m), esMiembro = r && r.id !== m.id;
@@ -457,6 +463,7 @@ function renderPanel(){
 $('#vistaMesa').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   const m = S.sel ? S.mesas.get(S.sel) : null; if (!m) return;
+  if (editando()) document.activeElement.blur();   // al tocar un botón ya no se está escribiendo: el panel puede redibujarse
   const act = b.dataset.act;
   if (b.dataset.st && !act) { aplicar(m, { estado: b.dataset.st }); return; }
   if (act === 'cerrar') { S.sel = null; render(); return; }
@@ -515,7 +522,8 @@ document.querySelectorAll('[data-add]').forEach(b => b.addEventListener('click',
 $('#btnReset').addEventListener('click', () => { $('#resetConfirm').hidden = false; });
 $('#resetNo').addEventListener('click', () => { $('#resetConfirm').hidden = true; });
 $('#resetSi').addEventListener('click', () => { $('#resetConfirm').hidden = true; resetPlano(); });
-window.addEventListener('resize', renderPanel);
+// Al cambiar el tamaño (en el celular, abrir el teclado) solo se ajusta la hoja inferior; no se redibuja el panel
+window.addEventListener('resize', () => { if (S.sel) aside.classList.toggle('sheet', esMovil()); });
 
 // ---------- Evento ----------
 $('#btnEvento').addEventListener('click', () => { const c = S.config; $('#evN').value = c.nombre; $('#evF').value = c.fecha; $('#evH').value = c.hora; $('#evA').value = c.aforo; $('#evS').value = c.sentados; $('#evAb').value = String(c.abierto) === 'no' ? 'no' : 'si'; $('#evHE').value = c.horas_espera; $('#dlgEvento').hidden = false; $('#evN').focus(); });

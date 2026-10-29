@@ -159,7 +159,8 @@ svg text{font-family:var(--f-text);pointer-events:none}
 const P = window.TDE_PLANO, cfg = window.TDE_CONFIG || {};
 const $ = s => document.querySelector(s);
 const esLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
-const API = (cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : (esLocal ? '/api' : '');
+// En localhost siempre se usa el simulador (scripts/reservas-mock-server.py), nunca la hoja real
+const API = esLocal ? '/api' : ((cfg.RESERVAS_API && cfg.RESERVAS_API !== 'PENDIENTE') ? cfg.RESERVAS_API : '');
 const WA = cfg.WHATSAPP || '573146551487';
 const S = { mesas: new Map(), config: {}, sel: null, enviando: false };
 const svg = $('#plano'), wrap = $('#planoWrap');

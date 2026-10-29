@@ -63,7 +63,7 @@ implementaciones → editar (lápiz) → Versión: Nueva versión → Implementa
   corta (cuatro dígitos) se adivina probando; mejor una palabra con número.
 - Un Apps Script gratuito atiende de sobra el tráfico de una fiesta (límite de Google: decenas de miles de llamadas por día).
 - Para probar en el computador sin tocar la hoja real: `python scripts/reservas-mock-server.py` y abrir http://localhost:8092/reservas
-  (clave del tablero de prueba: `PRUEBA`).
+  (clave del tablero de prueba: `PRUEBA`). En localhost las páginas usan siempre ese simulador, nunca la hoja real.
 
 ## Archivos
 
