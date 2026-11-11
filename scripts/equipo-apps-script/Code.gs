@@ -169,7 +169,16 @@ function filtrar_(docs, t, emp) {
     const col = r.split('/')[0], id = r.split('/')[1];
     if (t.propias.indexOf(col) >= 0) { if (docs[r].emp === emp) out[r] = docs[r]; }
     else if (col === 'respuestas') { const sol = docs['solicitudes/' + id]; if (sol && sol.emp === emp) out[r] = docs[r]; }
+    else if (col === 'calendario') out[r] = soloMio_(docs[r], emp);
     else out[r] = docs[r];
   });
   return out;
+}
+// Del calendario, cada persona recibe solo sus propios turnos. De los demás va únicamente el nombre (para pedir un cambio de turno).
+function soloMio_(cal, emp) {
+  const c = JSON.parse(JSON.stringify(cal || {})); const dias = {};
+  Object.keys(c.dias || {}).forEach(function (f) { if (c.dias[f] && c.dias[f][emp]) { dias[f] = {}; dias[f][emp] = c.dias[f][emp]; } });
+  c.dias = dias;
+  c.empleados = (c.empleados || []).map(function (e) { return { id: e.id, nombre: e.nombre, corto: e.corto, rol: e.rol }; });
+  return c;
 }

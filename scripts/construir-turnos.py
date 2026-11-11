@@ -56,6 +56,25 @@ page = sub1(page, "<button class=\"linkbtn\" data-act=\"cambiaryo\">No soy '+esc
 page = sub1(page, "Elige tu nombre. Este dispositivo lo recuerda para que marques tu ingreso y tu salida con un solo toque.",
             "Elige a la persona. Si entraste con tu clave y no apareces aquí, avisa al administrador para que te agregue al calendario.")
 
+# Vista del colaborador (pedido de Carlos y Juanca, 2026-11-10): cada persona ve solo su calendario.
+# El servidor ya le entrega únicamente sus turnos; aquí se quita lo general: resumen con alertas, cobertura,
+# dominicales trabajados, orden y herramientas. El administrador sigue viendo todo.
+page = sub1(page, "function canCal(){return OWNER}", "function canCal(){return OWNER}\nfunction soloYo(){return (!OWNER&&window.TDE_EQUIPO&&window.TDE_EQUIPO.emp)||null}")
+page = sub1(page, "  h+=summary(days);\n",
+            "  h+=soloYo()?'<section class=\"sum\" aria-label=\"Semana\"><div><p class=\"eyebrow\">Mi semana</p><h2>'+weekLabel()+'</h2></div></section>':summary(days);\n")
+page = sub1(page, "<div class=\"corner\">Equipo<small>Horas de la semana y dominicales del mes</small></div>';",
+            "<div class=\"corner\">'+(soloYo()?'Mi calendario<small>Horas programadas de la semana</small>':'Equipo<small>Horas de la semana y dominicales del mes</small>')+'</div>';")
+page = sub1(page, "  orderedEmps().forEach(function(e){\n", "  orderedEmps().filter(function(e){return !soloYo()||e.id===soloYo()}).forEach(function(e){\n")
+page = sub1(page, "'<span class=\"meta\">Dominicales trabajados '+MES[mm]+': <b class=\"'+(dm>=3?'bad':'')+'\">'+dm+'</b></span>'+",
+            "(soloYo()?'':'<span class=\"meta\">Dominicales trabajados '+MES[mm]+': <b class=\"'+(dm>=3?'bad':'')+'\">'+dm+'</b></span>')+")
+page = sub1(page, "  h+='<div class=\"ftl\">Cobertura<small>Personas por franja, 6 am a 3 am</small></div>';\n  days.forEach(function(f){h+=coverage(f)});\n",
+            "  if(!soloYo()){h+='<div class=\"ftl\">Cobertura<small>Personas por franja, 6 am a 3 am</small></div>';\n  days.forEach(function(f){h+=coverage(f)});}\n")
+page = sub1(page, "  h+='<label class=\"sortl\">", "  if(!soloYo())h+='<label class=\"sortl\">")
+page = sub1(page, "  h+='<div class=\"menuwrap\">", "  if(!soloYo())h+='<div class=\"menuwrap\">")
+page = sub1(page, "Este es el calendario publicado del equipo. Para pedir un cambio", "Este es tu calendario. Para pedir un cambio")
+page = sub1(page, "'</select></label><p class=\"lead\">'+esc(cortoId(sc))+' tiene ese día: <b>'+esc(sf?progText(items(sf,sc)):'')+'</b>. Habla primero con tu compañero.</p>';",
+            "'</select></label><p class=\"lead\">Habla primero con tu compañero.</p>';")
+
 CABEZA = """<!doctype html>
 <html lang="es" data-tablero="turnos">
 <head>

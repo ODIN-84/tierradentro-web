@@ -40,6 +40,11 @@ def filtrar(docs, t, emp):
         elif col == "respuestas":
             if docs.get("solicitudes/" + _id, {}).get("emp") == emp:
                 out[r] = d
+        elif col == "calendario":  # cada persona recibe solo sus turnos; de los demás, el nombre
+            c = json.loads(json.dumps(d))
+            c["dias"] = {f: {emp: v[emp]} for f, v in c.get("dias", {}).items() if emp in v}
+            c["empleados"] = [{k: e.get(k) for k in ("id", "nombre", "corto", "rol")} for e in c.get("empleados", [])]
+            out[r] = c
         else:
             out[r] = d
     return out

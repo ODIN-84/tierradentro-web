@@ -341,6 +341,7 @@ function commit(fn,msg){hist.push(clone({empleados:S.empleados,dias:S.dias,seq:S
 function undo(){var h=hist.pop();if(!h){toast('No hay cambios para deshacer');return}S.empleados=h.empleados;S.dias=h.dias;S.seq=h.seq;render();toast('Cambio deshecho')}
 function orderedEmps(){var a=S.empleados.slice();if(sortBy==='nombre')a.sort(function(x,y){return x.nombre.localeCompare(y.nombre,'es')});if(sortBy==='horas')a.sort(function(x,y){return weekMin(y.id)-weekMin(x.id)});return a}
 function canCal(){return OWNER}
+function soloYo(){return (!OWNER&&window.TDE_EQUIPO&&window.TDE_EQUIPO.emp)||null}
 function dv(id,def){return draft[id]!==undefined?draft[id]:def}
 
 /* registro: utilidades */
@@ -384,9 +385,9 @@ function calHTML(){
   var h='<div class="bar">';
   h+='<button class="btn outline" data-act="hoy">Hoy</button>'+weekNav();
   if(ed)h+='<div class="seg" role="group" aria-label="Al arrastrar una tarjeta"><button data-act="mode" data-v="mover" aria-pressed="'+(mode==='mover')+'">Mover</button><button data-act="mode" data-v="copiar" aria-pressed="'+(mode==='copiar')+'">Copiar</button></div>';
-  h+='<label class="sortl"><span>Ordenar por</span><select id="orden"><option value="orden"'+(sortBy==='orden'?' selected':'')+'>Orden del equipo</option><option value="nombre"'+(sortBy==='nombre'?' selected':'')+'>Nombre</option><option value="horas"'+(sortBy==='horas'?' selected':'')+'>Horas de la semana</option></select></label>';
+  if(!soloYo())h+='<label class="sortl"><span>Ordenar por</span><select id="orden"><option value="orden"'+(sortBy==='orden'?' selected':'')+'>Orden del equipo</option><option value="nombre"'+(sortBy==='nombre'?' selected':'')+'>Nombre</option><option value="horas"'+(sortBy==='horas'?' selected':'')+'>Horas de la semana</option></select></label>';
   h+='<span class="grow"></span>';
-  h+='<div class="menuwrap"><button class="btn outline" data-act="menu" aria-expanded="false" aria-haspopup="true">'+ICON.wrench+'Herramientas</button><div class="menu" id="menu" hidden>'+
+  if(!soloYo())h+='<div class="menuwrap"><button class="btn outline" data-act="menu" aria-expanded="false" aria-haspopup="true">'+ICON.wrench+'Herramientas</button><div class="menu" id="menu" hidden>'+
      '<button data-act="whatsapp"><b>Copiar turnos para WhatsApp</b><span>Texto de esta semana, día por día</span></button>'+
      (ed?'<button data-act="copiarprev"><b>Repetir la semana anterior</b><span>Reemplaza esta semana con la anterior</span></button>'+
      '<button data-act="vaciar"><b>Vaciar esta semana</b><span>Quita todos los turnos de estos 7 días</span></button>'+
@@ -397,16 +398,16 @@ function calHTML(){
      '</div></div>';
   if(ed)h+='<button class="btn primary" data-act="guardar"'+(dirty&&!readOnly?'':' disabled')+'>Guardar cambios</button>';
   h+='</div>';
-  h+=summary(days);
+  h+=soloYo()?'<section class="sum" aria-label="Semana"><div><p class="eyebrow">Mi semana</p><h2>'+weekLabel()+'</h2></div></section>':summary(days);
   h+='<div class="wrap" id="wrap"><div class="grid">';
-  h+='<div class="corner">Equipo<small>Horas de la semana y dominicales del mes</small></div>';
+  h+='<div class="corner">'+(soloYo()?'Mi calendario<small>Horas programadas de la semana</small>':'Equipo<small>Horas de la semana y dominicales del mes</small>')+'</div>';
   days.forEach(function(f,i){var d=parse(f),fe=S.festivos[f];h+='<div class="hd'+(fe?' fest':'')+(f===today?' today':'')+'"><b>'+DIAS[i]+'</b><span>'+MES[d.getMonth()]+' '+d.getDate()+'</span>'+(fe?'<em>Festivo: '+esc(fe)+'</em>':'')+'</div>'});
   var mm=mon.getMonth(),yy=mon.getFullYear();
-  orderedEmps().forEach(function(e){
+  orderedEmps().filter(function(e){return !soloYo()||e.id===soloYo()}).forEach(function(e){
     var wm=weekMin(e.id),over=wm>S.maxSemana*60,dm=domMes(e.id,yy,mm),sat=add(week,5),sl=wkSlot(e.id,sat),psl=wkSlot(e.id,add(sat,-7)),rep=sl&&sl!=='mixto'&&sl===psl;
     h+='<div class="who"><button class="name'+(ed?'':' ro')+'" data-act="persona" data-emp="'+e.id+'"'+(ed?'':' tabindex="-1"')+'>'+esc(e.nombre)+'</button>'+
        '<span class="meta">Horas programadas: <b class="'+(over?'bad':'')+'">'+h1(wm)+' / '+S.maxSemana+'</b></span>'+
-       '<span class="meta">Dominicales trabajados '+MES[mm]+': <b class="'+(dm>=3?'bad':'')+'">'+dm+'</b></span>'+
+       (soloYo()?'':'<span class="meta">Dominicales trabajados '+MES[mm]+': <b class="'+(dm>=3?'bad':'')+'">'+dm+'</b></span>')+
        (sl?'<span class="meta">Fin de semana: <b class="slot '+(sl==='mañana'?'am':sl==='tarde'?'pm':'')+(rep?' bad':'')+'">'+(sl==='mixto'?'mañana y tarde':sl)+'</b></span>':'')+'</div>';
     days.forEach(function(f,i){
       h+='<div class="cell'+(S.festivos[f]?' fest':'')+'" data-f="'+f+'" data-emp="'+e.id+'">';
@@ -415,11 +416,11 @@ function calHTML(){
       h+='</div>';
     });
   });
-  h+='<div class="ftl">Cobertura<small>Personas por franja, 6 am a 3 am</small></div>';
-  days.forEach(function(f){h+=coverage(f)});
+  if(!soloYo()){h+='<div class="ftl">Cobertura<small>Personas por franja, 6 am a 3 am</small></div>';
+  days.forEach(function(f){h+=coverage(f)});}
   h+='</div></div>';
   h+=ed?'<p class="help">Arrastra una tarjeta para moverla a otro día o a otra persona. Con <kbd>Ctrl</kbd> presionado, o con el modo <b>Copiar</b> activo, se duplica. Toca una tarjeta para editar la hora o la nota, y usa <b>+</b> para agregar un turno o un descanso. Los fines de semana rotan: quien estuvo en la tarde pasa a la mañana el siguiente, y el calendario avisa si alguien repite franja. Los cambios quedan para todos al presionar <b>Guardar cambios</b>.</p>'
-       :'<p class="help">Este es el calendario publicado del equipo. Para pedir un cambio en tu turno, entra a <b>Mi turno</b> y usa <b>Solicitar cambio de turno</b>.</p>';
+       :'<p class="help">Este es tu calendario. Para pedir un cambio en tu turno, entra a <b>Mi turno</b> y usa <b>Solicitar cambio de turno</b>.</p>';
   return h;
 }
 function card(it,f,e,i){
@@ -499,7 +500,7 @@ function yoHTML(){
      [['horario','Cambiar mi horario'],['cambio','Cambiar turno con un compañero'],['descanso','Pedir el día de descanso'],['otro','Otro cambio']].map(function(o){return '<option value="'+o[0]+'"'+(st===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></label></div>'+
      '<p class="lead">Ese día tienes: <b>'+esc(sf?progText(items(sf,e.id)):'')+'</b></p>';
   if(st==='horario')h+='<div class="row2"><label class="fld">Entraría a las<input type="time" id="sol-ini" step="900" value="'+esc(dv('sol-ini','14:30'))+'"></label><label class="fld">Saldría a las<input type="time" id="sol-fin" step="900" value="'+esc(dv('sol-fin','21:30'))+'"></label></div>';
-  if(st==='cambio')h+='<label class="fld">Con quién<select id="sol-con">'+otros.map(function(x){return '<option value="'+x.id+'"'+(sc===x.id?' selected':'')+'>'+esc(x.nombre)+'</option>'}).join('')+'</select></label><p class="lead">'+esc(cortoId(sc))+' tiene ese día: <b>'+esc(sf?progText(items(sf,sc)):'')+'</b>. Habla primero con tu compañero.</p>';
+  if(st==='cambio')h+='<label class="fld">Con quién<select id="sol-con">'+otros.map(function(x){return '<option value="'+x.id+'"'+(sc===x.id?' selected':'')+'>'+esc(x.nombre)+'</option>'}).join('')+'</select></label><p class="lead">Habla primero con tu compañero.</p>';
   h+='<label class="fld">Motivo<textarea id="sol-motivo" maxlength="400" placeholder="Cuéntale al administrador por qué necesitas el cambio">'+esc(dv('sol-motivo',''))+'</textarea></label>'+
      '<button class="btn primary" data-act="enviarsol"'+(busy||dbRO?' disabled':'')+'>Enviar solicitud</button>';
   var mis=R.solicitudes.filter(function(s){return s.emp===e.id}).sort(byTsDesc);
