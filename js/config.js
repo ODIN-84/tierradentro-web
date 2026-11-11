@@ -12,8 +12,8 @@ window.TDE_CONFIG = {
   RESERVAS_API: "https://script.google.com/macros/s/AKfycbz110X_NFPh973j7N5Q-yHfUm6-At2tw6QGxF71bvOr46bWFktTOF8rhs7ot1L3o3QG/exec",
 
   // Tableros del equipo (/equipo/turnos): URL del Apps Script "Equipo Tierradentro" (termina en /exec); ver scripts/equipo-apps-script/LEEME.md.
-  // Mientras sea "PENDIENTE", el tablero pide la clave y avisa que todavía no está conectado.
-  EQUIPO_API: "PENDIENTE",
+  // Proyecto "Equipo Tierradentro" de la cuenta del café; hoja "Equipo Tierradentro" (pestañas docs y personas). Implementado el 2026-11-10.
+  EQUIPO_API: "https://script.google.com/macros/s/AKfycbxaAAJaw5U8liCNSPsZEn9M_rwDOsLwFgb8AgzF7AsPjeajiOe1GMD9ibfIhM2klfOW/exec",
 
   // Línea bajo "Dónde estamos" para encontrar el local dentro del mall. Vacía = no se muestra.
   COMO_LLEGAR_MALL: "Estamos en el piso PB del edificio.",
