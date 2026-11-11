@@ -75,7 +75,7 @@ NOMBRES = {
     "Sandwich atún": "Tuna sandwich",
     "Sandwich jamón salami": "Ham and salami sandwich",
     "Sandwich serrano": "Serrano ham sandwich",
-    "Sandwich vegetariano": "Veggie sandwich",
+    "Sandwich burrata": "Burrata sandwich",
     "Bruschetta jamón serrano": "Serrano ham bruschetta",
     "Bruschetta burrata": "Burrata bruschetta",
     "Croissant de mantequilla": "Butter croissant",
