@@ -202,7 +202,7 @@ ul{list-style:none;margin:0;padding:0}
   img.addEventListener('touchend',function(e){if(sx===null)return;var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40)step(dx<0?1:-1);sx=null});
   function open(b){last=b;pics=b.dataset.full.split('|');k=0;show();img.alt=b.dataset.name;
     document.getElementById('lbName').textContent=b.dataset.name;
-    var p=b.dataset.price;document.getElementById('lbPrice').textContent=/X\d|·/.test(p)?p.replace(/(\d[\d.]*)/g,'$$$1'):'$'+p;
+    document.getElementById('lbPrice').innerHTML=b.parentNode.querySelector('.price').innerHTML; // el mismo precio que muestra la fila de la lista
     var d=document.getElementById('lbDesc');d.textContent=b.dataset.desc;d.hidden=!b.dataset.desc;
     lb.hidden=false;document.getElementById('lbClose').focus();}
   function close(){lb.hidden=true;img.removeAttribute('src');if(last)last.focus();}
