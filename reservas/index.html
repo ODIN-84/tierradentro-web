@@ -16,91 +16,133 @@
 <meta property="og:locale" content="es_CO">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@1,800&family=Barlow+Semi+Condensed:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:ital,wght@1,800;1,900&family=Barlow+Semi+Condensed:wght@600;700&display=swap">
 <style>
-/* Tierradentro · lienzo carbón, mismo sistema de la landing. El plano usa los colores oscuros del tablero del café. */
+/* Tierradentro · tema Carbón.
+   Construido con la skill sistema-diseno: paleta, roles (roles + roles_tema_carbon) y tipografía de .claude/skills/sistema-diseno/marca.json.
+   Espaciado en base 4, bordes en lugar de sombras, un solo acento por pantalla (el botón de WhatsApp de cada paso).
+   El plano usa los mismos colores de la paleta que el tablero del café (artefacto Reservas Fiesta de Salsa). */
 :root{
   color-scheme:dark;
-  --carbon:#111113; --surface:#19191b; --line:#2c2c2e;
-  --crema:#feffdb; --muted:#a8a49b; --arena:#d2b48c; --sol:#ffce5c; --bosque:#344e2a; --brote:#87ba77; --naranja:#fe502c; --vino:#740001;
+  /* Paleta de la marca (los nombres --carbon, --crema, --madera y --surface-raised también los usa js/plano-salsa.js) */
+  --carbon:#111113; --crema:#feffdb; --hueso:#e0ddd6; --arena:#d2b48c; --arena-gris:#a8a49b; --grafito:#5a5a5a;
+  --naranja:#fe502c; --madera:#af753e; --cafe:#69432d; --sol:#ffce5c; --vino:#740001; --salvia:#67746e; --pino:#396047; --bosque:#344e2a; --terracota:#a35a37;
+  --raised-carbon:#1d1d20; --line-carbon:#3a3a3d;
+  /* Roles de color */
+  --surface-page:var(--carbon); --surface-raised:var(--raised-carbon); --surface-tertiary:var(--line-carbon);
+  --text-primary:var(--crema); --text-secondary:var(--arena-gris);
+  --border-subtle:var(--line-carbon); --border-default:var(--grafito); --border-strong:var(--crema); --border-field:var(--arena-gris);
+  --accent:var(--naranja); --accent-hover:var(--madera); --accent-pressed:var(--madera); --accent-fg:var(--carbon);
+  --on-dark-hover:var(--raised-carbon);
+  --disabled-bg:var(--line-carbon); --disabled-fg:var(--arena-gris);
+  --status-danger-bg:var(--arena); --status-danger-icon:var(--vino);
+  --punto-de-luz:var(--sol);
+  --focus-ring-color:var(--crema);
+  /* Tipografía de la marca (sustitutos web) */
   --f-display:"Archivo Black","Arial Black",system-ui,sans-serif;
   --f-sub:"Archivo","Arial",system-ui,sans-serif;
   --f-text:"Barlow Semi Condensed","Bahnschrift","Arial Narrow",system-ui,sans-serif;
-  /* plano (tema Carbón) */
-  --p-piso:#26262a; --p-piso-junta:#2e2e33; --p-muro:#3a3a3f; --p-muro-borde:#55555b; --p-texto:#b9b6ad; --p-exterior:#1f2a1f;
-  --p-madera:#7a5a37; --p-madera-veta:#654827; --p-planta:#3f6b3a; --p-planta2:#2e5129; --p-barra:#5f6a24; --p-corredor:#c84a3a;
-  --p-tarima:#3c3c42; --p-tecnica:#6b5a24; --p-silla:#5c6058; --p-silla-borde:#8b9086;
-  --surface-raised:#1d1d20; --ink:#feffdb; --ink-muted:#a8a49b; --madera:#af753e; --granate:#591313;
-  --st-libre:#feffdb; --st-libre-borde:#d2b48c; --st-res:#3a3a3f; --st-res-borde:#55555b;
+  /* Espaciado base 4 y forma */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+  --radius-tag:4px; --radius-sm:6px; --radius-md:10px; --radius-lg:16px; --radius-pill:9999px;
+  /* Plano (tema Carbón): piso carbon; junta y exterior en la superficie elevada; muros y tarima en la línea; pista madera con veta café;
+     matas pino; barra del café salvia; zona técnica grafito */
+  --p-piso:var(--carbon); --p-piso-junta:var(--raised-carbon); --p-muro:var(--line-carbon); --p-muro-borde:var(--grafito); --p-texto:var(--crema); --p-exterior:var(--raised-carbon);
+  --p-madera:var(--madera); --p-madera-veta:var(--cafe); --p-planta:var(--pino); --p-planta2:var(--pino); --p-mata:var(--bosque); --p-barra:var(--salvia); --p-corredor:var(--terracota);
+  --p-tarima:var(--line-carbon); --p-tecnica:var(--grafito); --p-silla:var(--grafito); --p-silla-borde:var(--arena-gris);
+  /* Estados para el cliente: libre en crema (la mesa "en blanco" que se toca); reservada apagada */
+  --st-libre:var(--crema); --st-libre-borde:var(--arena-gris); --st-res:var(--line-carbon); --st-res-borde:var(--grafito);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{background:var(--carbon)}
-body{margin:0;background:var(--carbon);color:var(--crema);font-family:var(--f-text);font-size:17px;line-height:1.4;padding-inline:16px;-webkit-font-smoothing:antialiased}
+html{background:var(--surface-page)}
+body{margin:0;background:var(--surface-page);color:var(--text-primary);font-family:var(--f-text);font-size:17px;line-height:1.45;font-weight:600;letter-spacing:.04em;padding-inline:var(--space-4);-webkit-font-smoothing:antialiased}
 .wrap{max-width:960px;margin:0 auto}
 a{color:inherit}
-:focus-visible{outline:2px solid var(--sol);outline-offset:2px}
-button,input{font:inherit;color:inherit}
+b{font-weight:inherit}
+:focus-visible{outline:2px solid var(--focus-ring-color);outline-offset:2px}
+button,input{font:inherit;letter-spacing:inherit;color:inherit}
 button{cursor:pointer}
-.top{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;padding-block:22px 16px}
-.top img{width:64px;height:64px}
-.eyebrow{font-weight:600;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--arena);margin:0 0 6px}
-.top h1{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(24px,6vw,34px);line-height:.98;margin:0;text-wrap:balance}
-.fecha{margin:8px 0 0;font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:16px;color:var(--sol)}
-.pasos{margin:0 0 14px;padding:0;list-style:none;display:grid;gap:6px;color:var(--muted);font-size:16px}
-.pasos li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
-.pasos b{font-family:var(--f-display);font-weight:400;color:var(--sol);font-size:18px;line-height:1.2}
-.barra{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
-.cupos{font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:13px;color:var(--muted)}
-.cupos b{font-family:var(--f-display);font-weight:400;font-size:18px;color:var(--crema);margin-right:4px}
-.legend{display:flex;gap:12px;font-size:13px;color:var(--muted);align-items:center}
-.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;border:2px solid;vertical-align:-2px;margin-right:4px}
-.zoom{display:inline-flex;gap:4px;margin-left:auto}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:12px 18px;border:1px solid var(--arena);color:var(--arena);background:none}
-.btn.primary{background:var(--crema);color:var(--carbon);border-color:var(--crema)}
-.btn.sol{border-color:var(--sol);color:var(--sol)}
-.btn.wa{background:var(--sol);color:var(--carbon);border-color:var(--sol);font-size:16px;padding:16px 22px;width:100%}
-.btn.sm{padding:7px 12px;font-size:13px;letter-spacing:.08em}
-.btn:disabled{opacity:.5;cursor:default}
-.plano-wrap{position:relative;background:var(--p-piso);border:1px solid var(--line);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;height:min(62vh,520px)}
+
+/* Portada */
+.top{display:grid;grid-template-columns:auto 1fr;gap:var(--space-4);align-items:center;padding-block:var(--space-5) var(--space-4)}
+.top img{display:block;width:64px;height:64px}
+.eyebrow{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary);margin:0 0 var(--space-2)}
+.top h1{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:clamp(24px,6.6vw,40px);line-height:1;letter-spacing:.03em;margin:0;text-wrap:balance}
+.fecha{margin:var(--space-2) 0 0;font-family:var(--f-sub);font-style:italic;font-weight:900;font-size:17px;line-height:1.2;letter-spacing:0;color:var(--text-primary)}
+
+/* Pasos */
+.pasos{margin:0 0 var(--space-4);padding:0;list-style:none;display:grid;gap:var(--space-2);color:var(--text-secondary)}
+.pasos li{display:grid;grid-template-columns:24px 1fr;gap:var(--space-2);align-items:start}
+.pasos b{font-family:var(--f-display);font-weight:400;letter-spacing:0;color:var(--text-primary);font-size:17px;line-height:1.45}
+
+/* Barra del plano */
+.barra{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-3);align-items:center;margin:0 0 var(--space-2)}
+.cupos{font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:14px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)}
+.cupos b{font-family:var(--f-display);font-style:normal;font-weight:400;font-size:18px;letter-spacing:0;color:var(--text-primary);margin-right:var(--space-1)}
+.cupos b.esq{color:var(--text-secondary)}
+.legend{display:flex;gap:var(--space-3);font-size:13px;line-height:1.4;letter-spacing:.06em;color:var(--text-secondary);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:var(--radius-tag);border:2px solid;vertical-align:-2px;margin-right:var(--space-1)}
+.zoom{display:inline-flex;gap:var(--space-1);margin-left:auto}
+
+/* Botones: todos píldora. Contorno por defecto; el de WhatsApp de cada paso es la acción principal y lleva el acento. */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:40px;padding:var(--space-1) var(--space-5);border:1px solid var(--border-strong);border-radius:var(--radius-pill);background:transparent;color:var(--text-primary);font-weight:600;line-height:1.2;text-align:center;text-decoration:none}
+.btn:hover{background:var(--on-dark-hover)}
+.btn.sm{min-width:40px;padding:var(--space-1) var(--space-4)}
+.btn.wa{width:100%;min-height:48px;background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.wa:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.wa:active{background:var(--accent-pressed);border-color:var(--accent-pressed)}
+.btn:disabled,.btn:disabled:hover{background:var(--disabled-bg);border-color:var(--disabled-bg);color:var(--disabled-fg);cursor:default}
+
+/* Plano */
+.plano-wrap{position:relative;background:var(--p-piso);border:1px solid var(--border-subtle);overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;height:min(62vh,520px)}
 .plano-wrap svg{display:block;width:100%;height:100%;cursor:grab}
 .plano-wrap.dragging svg{cursor:grabbing}
-.hint{position:absolute;left:10px;bottom:8px;font-size:12px;color:var(--muted);background:rgba(17,17,19,.85);border:1px solid var(--line);padding:4px 8px;pointer-events:none}
+#plantas circle{fill:var(--p-mata)}
+.hint{position:absolute;left:var(--space-2);bottom:var(--space-2);right:var(--space-2);width:fit-content;font-size:13px;line-height:1.4;letter-spacing:.06em;color:var(--text-secondary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:var(--space-1) var(--space-2);pointer-events:none}
 /* Esqueleto de carga: el plano y las mesas aparecen de inmediato en gris; el aviso con punto late hasta que llega la hoja */
-.cargando{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--crema);background:rgba(17,17,19,.88);border:1px solid var(--line);padding:7px 12px;pointer-events:none;white-space:nowrap}
-.cargando i{width:9px;height:9px;border-radius:50%;background:var(--sol)}
+.cargando{position:absolute;left:50%;top:var(--space-3);transform:translateX(-50%);display:flex;align-items:center;gap:var(--space-2);font-family:var(--f-sub);font-style:italic;font-weight:800;font-size:13px;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;color:var(--text-primary);background:var(--surface-page);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);pointer-events:none;white-space:nowrap}
+.cargando i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--punto-de-luz)}
 @media (prefers-reduced-motion:no-preference){.cargando i{animation:late 1s ease-in-out infinite}}
 @keyframes late{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 #mesas.esqueleto .mesa{cursor:progress}
 #mesas.esqueleto .mesa .top{fill:var(--p-muro);stroke:var(--p-muro-borde)}
 #mesas.esqueleto .mesa text{opacity:.35}
-.cupos b.esq{color:var(--muted)}
-.aviso{margin:14px 0 0;padding:14px 16px;border:1px solid var(--sol);background:var(--surface);font-size:16px}
-.aviso .btn{margin-top:12px}
-.nota{margin:14px 0 0;font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
-.nota::before{content:"";position:absolute;left:0;top:.55em;width:6px;height:6px;border-radius:50%;background:var(--sol)}
-.foot{margin-top:34px;padding-block:22px 36px;border-top:1px solid var(--line);color:var(--muted);font-size:15px;display:grid;gap:8px}
-.foot a{color:var(--crema);font-weight:600}
 
-/* Hoja de solicitud */
-.velo{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:0}
-.hoja{background:var(--carbon);border:1px solid var(--line);border-bottom:0;width:min(100%,560px);max-height:88vh;overflow:auto;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:12px}
-@media (min-width:700px){.velo{align-items:center;padding:16px}.hoja{border-bottom:1px solid var(--line);max-height:90vh}}
-.hoja h2{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:22px;margin:0;line-height:1}
-.hoja .sub{margin:0;color:var(--muted)}
-.hoja .cab{display:flex;align-items:flex-start;gap:10px}
+/* Avisos y notas */
+.aviso{margin:var(--space-4) 0 0;padding:var(--space-4);border:1px solid var(--border-subtle);border-radius:var(--radius-lg);background:var(--surface-raised)}
+.aviso .btn{margin-top:var(--space-3)}
+.nota{margin:var(--space-4) 0 0;color:var(--text-secondary);padding-left:var(--space-4);position:relative}
+.nota::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--text-secondary)}
+.foot{margin-top:var(--space-6);padding-block:var(--space-5) var(--space-7);border-top:1px solid var(--border-subtle);color:var(--text-secondary);display:grid;gap:var(--space-2)}
+.foot p{margin:0}
+.foot a{color:var(--text-primary)}
+
+/* Hoja de solicitud: velo de carbon al 60 %, panel plano con borde fino y radio 16; en celular sube desde abajo */
+.velo{position:fixed;inset:0;background:rgba(17,17,19,.6);z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:0}
+.hoja{background:var(--surface-raised);border:1px solid var(--border-subtle);border-bottom:0;border-radius:var(--radius-lg) var(--radius-lg) 0 0;width:min(100%,560px);max-height:88vh;overflow:auto;padding:var(--space-5) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom,0px));display:grid;gap:var(--space-3)}
+@media (min-width:700px){.velo{align-items:center;padding:var(--space-4)}.hoja{border-bottom:1px solid var(--border-subtle);border-radius:var(--radius-lg);padding:var(--space-6);max-height:85vh}}
+.hoja h2{font-family:var(--f-display);font-weight:400;text-transform:uppercase;font-size:24px;letter-spacing:.03em;margin:0;line-height:1}
+.hoja .sub{margin:var(--space-1) 0 0;color:var(--text-secondary)}
+.hoja .cab{display:flex;align-items:flex-start;gap:var(--space-3)}
 .hoja .cab div{flex:1}
-.f{display:grid;gap:4px}
-.f label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--arena);font-weight:600}
-.f input{padding:12px;border:1px solid var(--line);background:var(--surface);color:var(--crema);width:100%;font-size:17px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.err{color:var(--sol);font-weight:600;margin:0}
-.codigo{font-family:var(--f-display);font-size:34px;color:var(--sol);margin:0;letter-spacing:.06em}
+/* Campos: 48 px, radio 10, borde de campo; el foco lo marca el anillo */
+.f{display:grid;gap:var(--space-1)}
+.f label{color:var(--text-primary)}
+.f input{height:48px;padding:0 var(--space-4);border:1px solid var(--border-field);border-radius:var(--radius-md);background:var(--surface-page);color:var(--text-primary);width:100%;font-size:17px}
+.f input:hover{border-color:var(--border-strong)}
+.f input::placeholder{color:var(--text-secondary);opacity:1}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);align-items:end}
+/* Error: en el tema Carbón el vino no se lee sobre carbon; va como bloque de estado (fondo arena, texto vino) */
+.err{margin:var(--space-3) 0 0;padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);background:var(--status-danger-bg);color:var(--status-danger-icon)}
+.codigo{font-family:var(--f-display);font-weight:400;font-size:32px;line-height:1.1;color:var(--text-primary);margin:0;letter-spacing:.06em}
+.ok{display:grid;gap:var(--space-3)}
 .ok p{margin:0}
-.ok .det{color:var(--muted)}
+.ok .det{color:var(--text-secondary)}
+.ok .det b{color:var(--text-primary)}
 
 /* svg */
-svg text{font-family:var(--f-text);pointer-events:none}
+svg text{font-family:var(--f-text);letter-spacing:0;pointer-events:none}
 .lbl{fill:var(--p-texto);font-size:15px;font-weight:700;letter-spacing:.08em;text-anchor:middle;text-transform:uppercase}
 .lbl.sm{font-size:11px;font-weight:600;letter-spacing:.06em}
 .mesa{cursor:pointer}
@@ -108,17 +150,22 @@ svg text{font-family:var(--f-text);pointer-events:none}
 .mesa[data-st="libre"] .top{fill:var(--st-libre);stroke:var(--st-libre-borde)}
 .mesa[data-st="reservada"] .top{fill:var(--st-res);stroke:var(--st-res-borde)}
 .mesa[data-st="reservada"]{cursor:default}
-.mesa .num{font-family:var(--f-display);font-size:19px;text-anchor:middle;fill:#111113}
-.mesa[data-st="reservada"] .num{fill:var(--muted)}
-.mesa .pax{font-size:10px;font-weight:600;text-anchor:middle;fill:var(--muted)}
-.mesa[data-st="libre"] .pax{fill:var(--crema)}
-.mesa[data-st="libre"] .in.pax{fill:#5a5a5a}
+.mesa .num{font-family:var(--f-display);font-size:19px;text-anchor:middle;fill:var(--carbon)}
+.mesa[data-st="reservada"] .num{fill:var(--text-secondary)}
+.mesa .pax{font-size:10px;font-weight:600;text-anchor:middle;fill:var(--text-secondary)}
+.mesa[data-st="libre"] .pax{fill:var(--text-primary)}
+.mesa[data-st="libre"] .in.pax{fill:var(--grafito)}
 .mesa .num.in{font-size:16px}
 .mesa .in.pax{font-size:9.5px;font-weight:700}
 .mesa .silla{fill:var(--p-silla);stroke:var(--p-silla-borde);stroke-width:1}
-.mesa.sel .top{stroke:var(--sol);stroke-width:4}
+.mesa.sel .top{stroke:var(--punto-de-luz);stroke-width:4}
 .enlace{display:none}
-@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+
+/* Movimiento: solo color y borde, corto (más el punto de carga, que es un indicador de progreso) */
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+  .btn,.f input{transition:background-color .16s ease,border-color .16s ease,color .16s ease}
+}
 </style>
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com">

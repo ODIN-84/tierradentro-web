@@ -44,12 +44,17 @@ HEAD_EXTRA = """<meta name="description" content="Carta 2026 de Tierradentro Caf
 
 FOOT_HOME = '<a class="btn" href="/">Ir al inicio</a>'
 
+# Desde el 2026-11-26 el artefacto trae la capa del sistema de diseño (<style id="td-sistema">, roles de marca.json en tema Carbón).
+# Lo que el sitio agrega (selector de idioma, notas de cata) va en un bloque aparte, después de esa capa, y usa sus roles:
+# contorno en píldora para el selector, arena solo en precios, etiquetas en la familia de etiquetas.
 # Selector de idioma (la versión en inglés la arma scripts/construir-carta-en.py).
 CSS_IDIOMA = (
-    ".top{position:relative;padding-top:60px}"
-    ".lang{position:absolute;top:12px;right:0;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.14em;"
-    "text-transform:uppercase;color:var(--crema);border:1px solid var(--arena);border-radius:999px;padding:9px 18px}"
-    ".lang:hover{color:var(--crema);border-color:var(--arena)}\n"
+    ".top{position:relative;padding-top:64px}"
+    ".lang{position:absolute;top:12px;right:0;display:inline-flex;align-items:center;box-sizing:border-box;min-height:40px;padding:0 20px;"
+    "border:1px solid var(--border-strong);border-radius:var(--radius-pill);background:transparent;color:var(--text-primary);"
+    "font-family:var(--font-interfaz);font-weight:600;font-size:16px;line-height:1.2;letter-spacing:.04em;text-decoration:none}"
+    ".lang:hover{background:var(--surface-raised)}"
+    "@media (prefers-reduced-motion:no-preference){.lang{transition:background-color 160ms,border-color 160ms}}\n"
 )
 LINK_IDIOMA = '<a class="lang" href="/en/menu" hreflang="en" lang="en" data-track="idioma_en">English</a>'
 
@@ -67,10 +72,14 @@ NOTA_LLEVAR = '<p class="note">Pregunta por nuestros high end y exóticos de tem
 # Línea bajo el título de la sección Café. Vacía = no se agrega.
 CAFE_CASA = '<p class="casa">Café de la casa: <b>Pangea</b> · Huila · mandarina | chocolate | melaza | nuez</p>'
 CSS_CATA = (
-    ".cata{grid-column:1/-1;margin:6px 0 0;font-weight:600;font-size:15px;letter-spacing:.04em;color:var(--arena)}"
-    ".origen{grid-column:1/-1;margin:2px 0 0;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}"
-    ".casa{margin:8px 0 0;font-size:15px;color:var(--muted)}.casa b{color:var(--crema);font-weight:600}"
+    ".cata{grid-column:1/-1;margin:8px 0 0;font-weight:600;font-size:15px;letter-spacing:.04em;color:var(--text-primary)}"
+    ".origen{grid-column:1/-1;margin:4px 0 0;font-family:var(--font-etiquetas);font-style:italic;font-weight:800;font-size:13px;line-height:1.2;"
+    "letter-spacing:.08em;text-transform:uppercase;color:var(--text-secondary)}"
+    ".casa{margin:8px 0 0;font-size:15px;color:var(--text-secondary)}.casa b{color:var(--text-primary);font-weight:600}\n"
 )
+# Precios con espacio después del símbolo ("$ 7.500"), como en la portada. Solo toca el texto de los precios de la lista;
+# la hoja del producto copia el precio de la fila, así que sale igual. data-price (analítica) no cambia.
+PRECIO = re.compile(r'(<div class="price">)(.*?)(</div>)', re.S)
 
 
 def construir(origen: Path) -> str:
@@ -107,12 +116,16 @@ def construir(origen: Path) -> str:
         '<img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84">',
         '<a href="/" aria-label="Ir al inicio"><img src="/img/logo.webp" alt="Tierradentro Café Express" width="84" height="84"></a>',
     )
-    # 5. Selector de idioma en la portada.
-    head_carta = head_carta.replace("</style>", CSS_IDIOMA + "</style>", 1)
+    # 5. Selector de idioma en la portada. El estilo del sitio va después de la capa del sistema de diseño, para usar sus roles.
+    if 'id="td-sistema"' not in head_carta:
+        sys.exit('El HTML del artefacto no trae la capa del sistema de diseño (<style id="td-sistema">). '
+                 "Bajar la versión publicada del artefacto, o pasarla antes por 0-AGENTE/06-BRANDING/sistema-diseno-capa/aplicar_capa.py.")
+    corte = head_carta.rindex("</style>") + len("</style>")
+    head_carta = head_carta[:corte] + '\n<style id="td-sitio">\n' + CSS_IDIOMA + CSS_CATA + "</style>" + head_carta[corte:]
     body_carta = body_carta.replace('<header class="top">', '<header class="top">\n    ' + LINK_IDIOMA, 1)
+    body_carta = PRECIO.sub(lambda m: m.group(1) + re.sub(r"\$(?=\d)", "$ ", m.group(2)) + m.group(3), body_carta)
 
     # 7. Notas de cata y café de la casa.
-    head_carta = head_carta.replace("</style>", CSS_CATA + "</style>", 1)
     for nombre, (notas, procedencia) in NOTAS_CATA.items():
         patron = re.compile(r'(<h4>' + re.escape(nombre) + r'</h4><p class="desc">[^<]*</p>)')
         if not patron.search(body_carta):

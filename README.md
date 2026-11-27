@@ -21,6 +21,9 @@ La carta se diseña y edita en el artefacto **https://claude.ai/artifact/DwXHwwd
 Para publicar una versión nueva:
 
 1. Descargar el HTML del artefacto (desde Claude Code: `Artifact read` guarda `index.html` e `img/`).
+   Desde el 2026-11-26 el artefacto trae la capa del sistema de diseño (`<style id="td-sistema">`) y el script la exige:
+   lo que agrega el sitio (selector de idioma, notas de cata) va en `<style id="td-sitio">` y usa los roles de esa capa.
+   El script también pone el espacio del precio (`$ 7.500`).
 2. Copiar las imágenes nuevas a `img/`.
 3. Ejecutar:
 
